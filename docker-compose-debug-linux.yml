@@ -1,0 +1,20 @@
+version: "3.4"
+
+services:
+  cookbook-db-mongodb:
+    image: sentinel-db-mongodb:${TAGVersion}-dev-linux
+    build:
+      context: ./mongodb
+      dockerfile: dockerfile-linux
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_DATABASE=cookbook
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=hbMnztmZ4w9JJTGZ
+      - MONGODB_DATABASE=cookbook
+    # volumes:
+    #   - ./data:/data/db
+    #   # - cookbookmongodata:/data/db
+    ports:
+      - 27017:27017

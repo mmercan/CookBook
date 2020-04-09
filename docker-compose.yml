@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  comms:
+    image: comms
+    build:
+      context: .
+      dockerfile: comms.api/Dockerfile
+    ports:
+      - 80

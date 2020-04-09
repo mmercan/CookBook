@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  comms:
+    image: comms
+    build:
+      context: .
+      dockerfile: comms.api/Dockerfile
+    ports:
+      - 80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
