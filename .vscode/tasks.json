@@ -1,8 +1,7 @@
 {
-    "tasks": [
-        {
+    "tasks": [{
             "type": "docker-build",
-            "label": "docker-build: debug",
+            "label": "docker-build-comms-api: debug",
             "dependsOn": [
                 "build"
             ],
@@ -19,12 +18,12 @@
         },
         {
             "type": "docker-build",
-            "label": "docker-build: release",
+            "label": "docker-build-comms-api: release",
             "dependsOn": [
                 "build"
             ],
             "dockerBuild": {
-                "tag": "cookbook:latest",
+                "tag": "cookbook-comms-api:latest",
                 "dockerfile": "${workspaceFolder}/comms.api/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
@@ -35,9 +34,9 @@
         },
         {
             "type": "docker-run",
-            "label": "docker-run: debug",
+            "label": "docker-run-comms-api: debug",
             "dependsOn": [
-                "docker-build: debug"
+                "docker-build-comms-api: debug"
             ],
             "dockerRun": {},
             "netCore": {
@@ -47,9 +46,9 @@
         },
         {
             "type": "docker-run",
-            "label": "docker-run: release",
+            "label": "docker-run-comms-api: release",
             "dependsOn": [
-                "docker-build: release"
+                "docker-build-comms-api: release"
             ],
             "dockerRun": {},
             "netCore": {
