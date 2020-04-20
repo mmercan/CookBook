@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace comms.api.tests
+namespace Comms.Api.Tests
 {
     public class UnitTest1
     {

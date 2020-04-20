@@ -6,8 +6,8 @@ $dir = Split-Path $scriptpath
 
 
 if ($param -eq "build") {
-    docker-compose.exe -f docker-compose-debug-linux.yml up --build --force-recreate cookbook-db-mongodb
+    docker-compose.exe -f docker-compose.yml up --build --force-recreate cookbook-db-mongodb comms-api
 }
 else {
-    docker-compose.exe -f docker-compose-debug-linux.yml up cookbook-db-mongodb
+    docker-compose.exe -f docker-compose.yml up cookbook-db-mongodb comms-api
 }

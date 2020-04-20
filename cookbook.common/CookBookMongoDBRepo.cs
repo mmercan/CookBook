@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CookBook.Models;
 using MongoDB.Driver;
 
-namespace cookbook.common
+namespace CookBook.Common
 {
     public class CookBookMongoDBRepo
     {
@@ -28,35 +28,46 @@ namespace cookbook.common
 
         public Task<List<Recipe>> GetAll()
         {
-            return _recipeRepo.Find(FilterDefinition<Recipe>.Empty).ToList();
+            // await _recipeRepo.FindAsync(FilterDefinition<Recipe>.Empty)
+            return _recipeRepo.Find(FilterDefinition<Recipe>.Empty).ToListAsync();  //.ToList();
         }
 
         public Task<List<Recipe>> PagedGetAll(int pageNumber, int pageSize)
         {
             var skips = pageSize * (pageNumber - 1);
             // Skip and limit
-            var pageditems = _recipeRepo.find().skip(skips).limit(pageSize);
-
+            var pageditems = _recipeRepo.Find(FilterDefinition<Recipe>.Empty).Skip(skips).Limit(pageSize).ToListAsync();
+            return pageditems;
         }
 
         public Task<List<Recipe>> Find(string Term)
         {
-
+            // FilterDefinition<Recipe> filter=  FilterDefinition<Recipe>.Empty;
+            var builder = Builders<Recipe>.Filter;
+            //var filter = builder.Eq("x", 10) & builder.Lt("y", 20);
+            //var filter = builder.Eq(r => r.Name, Term ); //& builder.Lt("y", 20);
+            //var filter = builder.Text(r => r.Name, Term )
+            var filter = builder.Text(Term, new TextSearchOptions { CaseSensitive = false });
+            return _recipeRepo.Find(filter).ToListAsync();
         }
 
-        public Task<Recipe> Insert(Recipe recipe)
+        public Task Insert(Recipe recipe)
         {
-
+            return _recipeRepo.InsertOneAsync(recipe);
         }
 
-        public Task<Recipe> Update(Recipe recipe)
+        public Task Update(Recipe recipe)
         {
-
+            var filter = Builders<Recipe>.Filter.Eq((r) => r.Id, recipe.Id);
+            //             UpdateDefinition<Recipe> def = new MongoDB.Driver.UpdateDefinition<Recipe>()
+            return _recipeRepo.ReplaceOneAsync(filter, recipe);
         }
 
-        public Task<Recipe> Delete(Recipe recipe)
+        public Task Delete(Recipe recipe)
         {
-
+            var filter = Builders<Recipe>.Filter.Eq((r) => r.Id, recipe.Id);
+            return _recipeRepo.DeleteOneAsync(filter);
+            // DeleteResult
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace comms.api
+namespace Comms.Api
 {
     public class WeatherForecast
     {

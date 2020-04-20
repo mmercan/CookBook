@@ -2,57 +2,49 @@
     "tasks": [{
             "type": "docker-build",
             "label": "docker-build-comms-api: debug",
-            "dependsOn": [
-                "build"
-            ],
+            "dependsOn": ["build"],
             "dockerBuild": {
                 "tag": "cookbook:dev",
                 "target": "base",
-                "dockerfile": "${workspaceFolder}/comms.api/Dockerfile",
+                "dockerfile": "${workspaceFolder}/Comms.Api/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/comms.api/comms.api.csproj"
+                "appProject": "${workspaceFolder}/Comms.Api/Comms.Api.csproj"
             }
         },
         {
             "type": "docker-build",
             "label": "docker-build-comms-api: release",
-            "dependsOn": [
-                "build"
-            ],
+            "dependsOn": ["build"],
             "dockerBuild": {
                 "tag": "cookbook-comms-api:latest",
-                "dockerfile": "${workspaceFolder}/comms.api/Dockerfile",
+                "dockerfile": "${workspaceFolder}/Comms.Api/Dockerfile",
                 "context": "${workspaceFolder}",
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/comms.api/comms.api.csproj"
+                "appProject": "${workspaceFolder}/Comms.Api/Comms.Api.csproj"
             }
         },
         {
             "type": "docker-run",
             "label": "docker-run-comms-api: debug",
-            "dependsOn": [
-                "docker-build-comms-api: debug"
-            ],
+            "dependsOn": ["docker-build-comms-api: debug"],
             "dockerRun": {},
             "netCore": {
-                "appProject": "${workspaceFolder}/comms.api/comms.api.csproj",
+                "appProject": "${workspaceFolder}/Comms.Api/Comms.Api.csproj",
                 "enableDebugging": true
             }
         },
         {
             "type": "docker-run",
             "label": "docker-run-comms-api: release",
-            "dependsOn": [
-                "docker-build-comms-api: release"
-            ],
+            "dependsOn": ["docker-build-comms-api: release"],
             "dockerRun": {},
             "netCore": {
-                "appProject": "${workspaceFolder}/comms.api/comms.api.csproj"
+                "appProject": "${workspaceFolder}/Comms.Api/Comms.Api.csproj"
             }
         }
     ]

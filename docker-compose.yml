@@ -1,10 +1,36 @@
-version: '3.4'
+version: "3.4"
 
 services:
-  comms:
-    image: comms
+  cookbook-db-mongodb:
+    image: sentinel-db-mongodb:${TAGVersion}-dev-linux
     build:
-      context: .
-      dockerfile: comms.api/Dockerfile
+      context: ./mongodb
+      dockerfile: dockerfile-linux
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_DATABASE=cookbook
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=hbMnztmZ4w9JJTGZ
+      - MONGODB_DATABASE=cookbook
+    # volumes:
+    #   - ./data:/data/db
+    #   # - cookbookmongodata:/data/db
     ports:
-      - 80
+      - 27017:27017
+
+  comms-api:
+    image: comms-api:${TAGVersion}-dev-linux
+    build:
+      target: develop
+      context: .
+      dockerfile: Comms.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - .:/src
+    entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
+    ports:
+      - "5005:80"

@@ -5,7 +5,7 @@ services:
     image: comms
     build:
       context: .
-      dockerfile: comms.api/Dockerfile
+      dockerfile: Comms.Api/Dockerfile
     ports:
       - 80
     environment:
