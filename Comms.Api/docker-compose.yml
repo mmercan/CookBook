@@ -17,7 +17,7 @@ services:
     build:
       target: test
       context: ../
-      dockerfile: Comms.Api/Dockerfile-linux-test
+      dockerfile: Comms.Api/Dockerfile-test
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_USE_POLLING_FILE_WATCHER=1
