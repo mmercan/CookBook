@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
-namespace Comms.Api.CustomFeatureFilter
+namespace CookBook.Common.CustomFeatureFilter
 {
     [FilterAlias("Headers")] // How we will refer to the filter in configuration
     public class HeadersFeatureFilter : IFeatureFilter

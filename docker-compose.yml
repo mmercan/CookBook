@@ -34,3 +34,18 @@ services:
     entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
     ports:
       - "5005:80"
+  cookbook-api:
+    image: cookbook-api:${TAGVersion}-dev-linux
+    build:
+      target: develop
+      context: .
+      dockerfile: CookBook.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - .:/src
+    entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
+    ports:
+      - "5006:80"

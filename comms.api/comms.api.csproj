@@ -4,6 +4,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>7917f6e63ef2d6af6898dfaa8f95d9b3</UserSecretsId>
   </PropertyGroup>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\credit-rating-service.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="EasyNetQ" Version="4.0.0" />
@@ -23,11 +33,14 @@
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.3.1" />
     <PackageReference Include="WebPush" Version="1.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.27.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CookBook.Common\CookBook.Common.csproj" />
     <ProjectReference Include="..\Mercan\Mercan.Common.Mongo\Mercan.Common.Mongo.csproj" />
     <ProjectReference Include="..\CookBook.Models\CookBook.Models.csproj" />
     <ProjectReference Include="..\Mercan\Mercan.Common\Mercan.Common.csproj" />
+    <ProjectReference Include="..\Mercan\Mercan.HealthChecks.Common\Mercan.HealthChecks.Common.csproj" />
   </ItemGroup>
 </Project>

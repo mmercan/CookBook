@@ -1,6 +1,7 @@
 syntax = "proto3";
 
-option csharp_namespace = "grpcTest";
+option csharp_namespace = "Comms.Api";
+
 
 package greet;
 

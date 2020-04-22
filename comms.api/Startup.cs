@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Comms.Api.Helpers;
 using CookBook.Common;
 using CookBook.Models;
-using Comms.Api.CustomFeatureFilter;
 using EasyNetQ;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +29,12 @@ using Microsoft.Extensions.Caching.Distributed;
 using System.Text;
 using Serilog;
 using Serilog.Events;
+using Comms.Api.Hubs;
+using Mercan.HealthChecks.Common.Checks;
+using Mercan.HealthChecks.Common;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using CookBook.Common.CustomFeatureFilter;
 
 namespace Comms.Api
 {
@@ -47,11 +52,31 @@ namespace Comms.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddGrpc();
+
             services.AddControllers();
             services.AddSingleton<IServiceCollection>(services);
             services.AddSingleton<IConfiguration>(Configuration);
             // services.AddSingleton<PushNotificationService>();
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                .AddProcessList()
+                .AddPerformanceCounter("Win32_PerfRawData_PerfOS_Memory")
+                .AddPerformanceCounter("Win32_PerfRawData_PerfOS_Memory", "AvailableMBytes")
+                .AddPerformanceCounter("Win32_PerfRawData_PerfOS_Memory", "PercentCommittedBytesInUse", "PercentCommittedBytesInUse_Base")
+                .AddSystemInfoCheck()
+                .AddPrivateMemorySizeCheckKB(30000)
+                .AddWorkingSetCheckKB(300000)
+                // //.AddCheck<SlowDependencyHealthCheck>("Slow", failureStatus: null, tags: new[] { "ready", })
+                .SqlConnectionHealthCheck(Configuration["SentinelConnection"])
+                // .AddApiIsAlive(Configuration.GetSection("sentinel-ui-sts:ClientOptions"), "api/healthcheck/isalive")
+                // .AddApiIsAlive(Configuration.GetSection("sentinel-api-member:ClientOptions"), "api/healthcheck/isalive")
+                // .AddApiIsAlive(Configuration.GetSection("sentinel-api-product:ClientOptions"), "api/healthcheck/isalive")
+                // .AddApiIsAlive(Configuration.GetSection("sentinel-api-comms:ClientOptions"), "api/healthcheck/isalive")
+                // .AddMongoHealthCheck(Configuration["Mongodb:ConnectionString"])
+                // .AddRabbitMQHealthCheck(Configuration["RabbitMQConnection"])
+                // .AddRedisHealthCheck(Configuration["RedisConnection"])
+                //.AddRedisHealthCheck(Configuration["RedisConnection"])
+                .AddDIHealthCheck(services);
 
             services.AddApplicationInsightsTelemetry(Configuration["ApplicationInsights"]);
             services.AddApplicationInsightsKubernetesEnricher();
@@ -198,7 +223,29 @@ namespace Comms.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllers();
+
+                endpoints.MapGrpcService<CreditRatingCheckService>();
+
+                // endpoints.MapGet("/", async context =>
+                // {
+                //     await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+                // });
+            });
+
+            app.UseHealthChecksWithAuth("/Health/IsAliveAndWell", new HealthCheckOptions()
+            {
+                ResponseWriter = WriteResponses.WriteListResponse,
+            });
+
+            app.Map("/Health/IsAlive", (ap) =>
+            {
+                ap.Run(async context =>
+                {
+                    context.Response.ContentType = "application/json";
+                    await context.Response.WriteAsync("{\"IsAlive\":true}");
+                });
             });
         }
 

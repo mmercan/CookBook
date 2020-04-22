@@ -1,6 +1,6 @@
 using System;
 
-namespace cookbook.api
+namespace CookBook.Api
 {
     public class WeatherForecast
     {

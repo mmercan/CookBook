@@ -1,19 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comms.Api", "Comms.Api\Comms.Api.csproj", "{7F61DC5B-FD62-4F30-A235-6B1E82387804}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comms.Api", "Comms.Api\Comms.Api.csproj", "{7F61DC5B-FD62-4F30-A235-6B1E82387804}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cookbook.common", "cookbook.common\cookbook.common.csproj", "{1B4D33D6-173E-43F7-AC60-CF62CFA37F7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cookbook.common", "cookbook.common\cookbook.common.csproj", "{1B4D33D6-173E-43F7-AC60-CF62CFA37F7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cookbook.models", "cookbook.models\cookbook.models.csproj", "{22ADA1E0-C05B-41A9-9C21-E700074647F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cookbook.models", "cookbook.models\cookbook.models.csproj", "{22ADA1E0-C05B-41A9-9C21-E700074647F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comms.Api.Tests", "Comms.Api.Tests\Comms.Api.Tests.csproj", "{8ADDB070-94DB-4F0D-8A37-0E7AAB6B1AE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Comms.Api.Tests", "Comms.Api.Tests\Comms.Api.Tests.csproj", "{8ADDB070-94DB-4F0D-8A37-0E7AAB6B1AE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookBook.Api", "CookBook.Api\CookBook.Api.csproj", "{5CBE8939-1BAC-45C7-8ECB-6FFA3C8EC9E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookBook.Api", "CookBook.Api\CookBook.Api.csproj", "{5CBE8939-1BAC-45C7-8ECB-6FFA3C8EC9E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CookBook.Api.Tests", "CookBook.Api.tests\CookBook.Api.Tests.csproj", "{FFC7BE82-7EEF-46C7-9011-D96F23C1CE0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookBook.Api.Tests", "CookBook.Api.tests\CookBook.Api.Tests.csproj", "{FFC7BE82-7EEF-46C7-9011-D96F23C1CE0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,9 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{7F61DC5B-FD62-4F30-A235-6B1E82387804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -100,5 +97,11 @@ Global
 		{FFC7BE82-7EEF-46C7-9011-D96F23C1CE0A}.Release|x64.Build.0 = Release|Any CPU
 		{FFC7BE82-7EEF-46C7-9011-D96F23C1CE0A}.Release|x86.ActiveCfg = Release|Any CPU
 		{FFC7BE82-7EEF-46C7-9011-D96F23C1CE0A}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5C73A099-9DDC-48BC-8AD2-30D8EAB681BA}
 	EndGlobalSection
 EndGlobal

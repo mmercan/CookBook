@@ -1,4 +1,4 @@
-namespace Comms.Api.CustomFeatureFilter
+namespace CookBook.Common.CustomFeatureFilter
 {
     public class HeadersFilterSettings
     {

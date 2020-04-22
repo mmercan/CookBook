@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Comms.Api.Helpers
+namespace CookBook.Api.Helpers
 {
     public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
@@ -23,9 +23,9 @@ namespace Comms.Api.Helpers
         {
             var info = new OpenApiInfo()
             {
-                Title = "Comms API",
+                Title = "CookBook API",
                 Version = description.ApiVersion.ToString(),
-                Description = "Comms Api, Swashbuckle, and API versioning.",
+                Description = "Cook Book Api, Swashbuckle, and API versioning.",
                 Contact = new OpenApiContact() { Name = "Matt Mercan", Email = "mmercan@outlook.com" },
                 TermsOfService = new Uri("https://mmercan.com"),
                 License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }

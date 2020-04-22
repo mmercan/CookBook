@@ -46,6 +46,58 @@
             "netCore": {
                 "appProject": "${workspaceFolder}/Comms.Api/Comms.Api.csproj"
             }
+        },
+
+
+
+
+        {
+            "type": "docker-build",
+            "label": "docker-build-cookbook-api: debug",
+            "dependsOn": ["build"],
+            "dockerBuild": {
+                "tag": "cookbook:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/CookBook.Api/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/CookBook.Api/CookBook.Api.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build-cookbook-api: release",
+            "dependsOn": ["build"],
+            "dockerBuild": {
+                "tag": "cookbook-cookbook-api:latest",
+                "dockerfile": "${workspaceFolder}/CookBook.Api/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/CookBook.Api/CookBook.Api.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run-cookbook-api: debug",
+            "dependsOn": ["docker-build-cookbook-api: debug"],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/CookBook.Api/CookBook.Api.csproj",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run-cookbook-api: release",
+            "dependsOn": ["docker-build-cookbook-api: release"],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/CookBook.Api/CookBook.Api.csproj"
+            }
         }
     ]
 }
