@@ -29,7 +29,7 @@ stages:
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: DockerHub
-              dockerComposeFile: "Comms.Api/docker-compose-test.yml"
+              dockerComposeFile: "Comms.Api/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Build services"
               additionalImageTags: "$(Build.BuildNumber)"
