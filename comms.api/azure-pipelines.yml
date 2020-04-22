@@ -19,7 +19,7 @@ trigger:
 stages:
   - stage: build
     jobs:
-      - job: build-comms-api
+      - job: build_comms_api
         displayName: Build Comms Api
         pool:
           name: Hosted Ubuntu 1604
@@ -34,7 +34,7 @@ stages:
               action: "Build services"
               additionalImageTags: "$(Build.BuildNumber)"
               includeLatestTag: true
-              arguments: "--build-arg buildtime_APPID=$(buildtime_APPID)  --build-arg buildtime_APPSECRET=$(buildtime_APPSECRET) --build-arg buildtime_ADID=$(buildtime_ADID) --build-arg buildtime_SONARKEY=$(buildtime_SONARKEY)"
+              arguments: "--build-arg buildtime_APPID=$(buildtime_APPID)  --build-arg buildtime_APPSECRET=$(buildtime_APPSECRET) --build-arg buildtime_ADID=$(buildtime_ADID) --build-arg buildtime_SONARKEY=$(buildtime_SONARKEY) api-comms-test"
 # pool:
 #   vmImage: "ubuntu-latest"
 
