@@ -119,7 +119,7 @@ stages:
                 - task: HelmDeploy@0
                   inputs:
                     connectionType: 'Kubernetes Service Connection'
-                    kubernetesServiceConnection: 'CookBook-Dev-cookbook-dev-1587525966506'
+                    kubernetesServiceConnection: 'CookBook-Dev-cookbook-dev-1587531947641'
                     namespace: 'cookbook-dev'
                     command: 'ls'
 
