@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Sentinel.Empty.Tests
+namespace Empty.Tests
 {
     public class UnitTest1
     {

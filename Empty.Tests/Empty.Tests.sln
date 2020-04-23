@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentinel.Empty.Tests", "Sentinel.Empty.Tests.csproj", "{8860955F-6F14-4DC6-ACE6-20B18E286050}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Empty.Tests", "Empty.Tests.csproj", "{8860955F-6F14-4DC6-ACE6-20B18E286050}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
