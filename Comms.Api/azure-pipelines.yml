@@ -86,6 +86,16 @@ stages:
               SourceFolder: "Helm/cookbook/charts/comms-api"
               TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/comms-api"
 
+          # - task: CopyFiles@2
+          #   displayName: "Copy yaml"
+          #   inputs:
+          #     SourceFolder: Sentinel.Api.Comms
+          #     Contents: "*.yaml"
+          #     TargetFolder: "$(Build.ArtifactStagingDirectory)"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifacts: drop"
+
   - stage: deploy_to_dev
     jobs:
       - deployment: DeployWeb
