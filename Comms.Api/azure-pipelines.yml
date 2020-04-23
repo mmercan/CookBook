@@ -117,25 +117,16 @@ stages:
                     checkLatestHelmVersion: false
 
                 - task: HelmDeploy@0
+                  displayName: "helm package"
                   inputs:
-                    connectionType: 'Kubernetes Service Connection'
-                    kubernetesServiceConnection: 'CookBook-Dev-cookbook-dev-1587531947641'
-                    namespace: 'cookbook-dev'
-                    command: 'ls'
-
-                # - task: HelmDeploy@0
-                #   displayName: "helm package"
-                #   inputs:
-                #     azureSubscription: "Visual Studio Enterprise"
-                #     azureResourceGroup: "akscluster-rg"
-                #     kubernetesCluster: "aks-matt"
-                #     namespace: "sentinel-helm"
-                #     command: package
-                #     chartPath: "$(Pipeline.Workspace)/drop/Helm/sentinel/charts/$(chartName)"
-                #     chartVersion: "2.0.0-$(Build.BuildNumber)"
-                #     destination: "$(System.DefaultWorkingDirectory)"
-                #     save: false
-
+                    connectionType: "Kubernetes Service Connection"
+                    kubernetesServiceConnection: "CookBook-Dev-cookbook-dev-1587531947641"
+                    namespace: "cookbook-dev"
+                    command: package
+                    chartPath: "$(Pipeline.Workspace)/drop/Helm/cookbook/charts/$(chartName)"
+                    chartVersion: "2.0.0-$(Build.BuildNumber)"
+                    destination: "$(System.DefaultWorkingDirectory)"
+                    save: false
                 # - task: HelmDeploy@0
                 #   displayName: "helm upgrade"
                 #   inputs:
@@ -149,7 +140,6 @@ stages:
                 #     chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
                 #     releaseName: "$(releaseName)"
                 #     overrideValues: "image.tag=$(Build.BuildNumber) --set branch=$(Build.SourceBranchName) --set azurepipelines.pipeline=$(pipelines_pipeline)  --set azurepipelines.run='$(pipelines_run)'  --set azurepipelines.pipelineId='$(pipelines_pipelineId)'  --set azurepipelines.project=$(pipelines_project)  --set azurepipelines.org='$(pipelines_org)'  --set azurepipelines.jobName='$(pipelines_jobName)' --set azurepipelines.runuri='$(pipelines_runuri)' "
-
                 # - task: HelmDeploy@0
                 #   inputs:
                 #     #connectionType: "Kubernetes Service Connection"
@@ -160,10 +150,6 @@ stages:
                 #     kubernetesCluster: "aks-matt"
                 #     namespace: "sentinel-helm"
                 #     command: "ls"
-
-
-
-
 # pool:
 #   vmImage: "ubuntu-latest"
 
