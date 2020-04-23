@@ -137,6 +137,18 @@ stages:
                     chartVersion: "2.0.0-$(Build.BuildNumber)"
                     destination: "$(System.DefaultWorkingDirectory)"
                     save: false
+
+                - task: HelmDeploy@0
+                  displayName: "helm upgrade"
+                  inputs:
+                    connectionType: "Kubernetes Service Connection"
+                    kubernetesServiceConnection: "CookBook-Dev-cookbook-dev-1587531947641"
+                    namespace: "cookbook-dev"
+                    command: upgrade
+                    chartType: FilePath
+                    chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
+                    releaseName: "$(releaseName)"
+                    overrideValues: "image.tag=$(Build.BuildNumber) --set branch=$(Build.SourceBranchName) --set azurepipelines.pipeline=$(pipelines_pipeline)  --set azurepipelines.run='$(pipelines_run)'  --set azurepipelines.pipelineId='$(pipelines_pipelineId)'  --set azurepipelines.project=$(pipelines_project)  --set azurepipelines.org='$(pipelines_org)'  --set azurepipelines.jobName='$(pipelines_jobName)' --set azurepipelines.runuri='$(pipelines_runuri)' "
                 # - task: HelmDeploy@0
                 #   displayName: "helm upgrade"
                 #   inputs:
