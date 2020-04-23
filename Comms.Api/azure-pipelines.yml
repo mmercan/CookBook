@@ -37,12 +37,56 @@ stages:
               arguments: "--build-arg buildtime_APPID=$(buildtime_APPID)  --build-arg buildtime_APPSECRET=$(buildtime_APPSECRET) --build-arg buildtime_ADID=$(buildtime_ADID) --build-arg buildtime_SONARKEY=$(buildtime_SONARKEY)"
 
           - task: Docker@2
-            displayName: run
+            displayName: Docker Run Test Image
             inputs:
               containerRegistry: DockerHub
               command: run
               arguments: "-i -v $(Build.ArtifactStagingDirectory):/TestResults api-comms-test"
             continueOnError: true
+
+          - task: PublishTestResults@2
+            displayName: "Publish Test Results *.trx"
+            inputs:
+              testResultsFormat: VSTest
+              testResultsFiles: "*.trx"
+              searchFolder: "$(Build.ArtifactStagingDirectory)"
+
+          - task: PublishCodeCoverageResults@1
+            displayName: "Publish code coverage from $(Build.ArtifactStagingDirectory)/coverage.cobertura.xml"
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: "$(Build.ArtifactStagingDirectory)/coverage.cobertura.xml"
+              pathToSources: "$(Build.SourcesDirectory)"
+
+          - task: DockerCompose@0
+            displayName: "Build Images"
+            inputs:
+              containerregistrytype: "Container Registry"
+              azureSubscription: "BupaANZ-InfoSvcs-Test"
+              azureContainerRegistry: '{"loginServer":"matttestacr01.azurecr.io", "id" : "/subscriptions/4cef4169-6e79-4afe-a286-dbb3a671e8e8/resourceGroups/matt-test-aks-rg/providers/Microsoft.ContainerRegistry/registries/matttestacr01"}'
+              dockerComposeFile: "Comms.Api/docker-compose.yml"
+              dockerComposeFileArgs: "TAGVersion=01"
+              action: "Build services"
+              additionalImageTags: "$(Build.BuildNumber)"
+              includeLatestTag: true
+
+          - task: DockerCompose@0
+            displayName: "Push Images"
+            inputs:
+              containerregistrytype: "Container Registry"
+              azureSubscription: "BupaANZ-InfoSvcs-Test"
+              azureContainerRegistry: '{"loginServer":"matttestacr01.azurecr.io", "id" : "/subscriptions/4cef4169-6e79-4afe-a286-dbb3a671e8e8/resourceGroups/matt-test-aks-rg/providers/Microsoft.ContainerRegistry/registries/matttestacr01"}'
+              dockerComposeFile: "Comms.Api/docker-compose.yml"
+              dockerComposeFileArgs: "TAGVersion=01"
+              action: "Push services"
+              additionalImageTags: "$(Build.BuildNumber)"
+              includeLatestTag: true
+
+          - task: CopyFiles@2
+            displayName: "Copy Helm Comms.Api"
+            inputs:
+              SourceFolder: "Helm/cookbook/charts/comms-api"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/comms-api"
 # pool:
 #   vmImage: "ubuntu-latest"
 
