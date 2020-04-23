@@ -62,8 +62,7 @@ stages:
             displayName: "Build Images"
             inputs:
               containerregistrytype: "Container Registry"
-              azureSubscription: "BupaANZ-InfoSvcs-Test"
-              azureContainerRegistry: '{"loginServer":"matttestacr01.azurecr.io", "id" : "/subscriptions/4cef4169-6e79-4afe-a286-dbb3a671e8e8/resourceGroups/matt-test-aks-rg/providers/Microsoft.ContainerRegistry/registries/matttestacr01"}'
+              dockerRegistryEndpoint: matttestacr01
               dockerComposeFile: "Comms.Api/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Build services"
@@ -74,8 +73,7 @@ stages:
             displayName: "Push Images"
             inputs:
               containerregistrytype: "Container Registry"
-              azureSubscription: "BupaANZ-InfoSvcs-Test"
-              azureContainerRegistry: '{"loginServer":"matttestacr01.azurecr.io", "id" : "/subscriptions/4cef4169-6e79-4afe-a286-dbb3a671e8e8/resourceGroups/matt-test-aks-rg/providers/Microsoft.ContainerRegistry/registries/matttestacr01"}'
+              dockerRegistryEndpoint: matttestacr01
               dockerComposeFile: "Comms.Api/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Push services"
