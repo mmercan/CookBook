@@ -93,7 +93,7 @@ stages:
         pool:
           vmImage: "Ubuntu-16.04"
         # creates an environment if it doesn't exist
-        environment: "sentinel-helm.sentinel-helm"
+        environment: "CookBook-Dev.cookbook-dev"
         variables:
           chartName: "comms-api"
           namespace: "cookbook-dev"
