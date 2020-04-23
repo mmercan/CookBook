@@ -35,6 +35,14 @@ stages:
               additionalImageTags: "$(Build.BuildNumber)"
               includeLatestTag: true
               arguments: "--build-arg buildtime_APPID=$(buildtime_APPID)  --build-arg buildtime_APPSECRET=$(buildtime_APPSECRET) --build-arg buildtime_ADID=$(buildtime_ADID) --build-arg buildtime_SONARKEY=$(buildtime_SONARKEY)"
+
+          - task: Docker@2
+            displayName: run
+            inputs:
+              containerRegistry: DockerHub
+              command: run
+              arguments: "-i -v $(Build.ArtifactStagingDirectory):/TestResults api-comms-test"
+            continueOnError: true
 # pool:
 #   vmImage: "ubuntu-latest"
 
