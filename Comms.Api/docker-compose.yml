@@ -12,12 +12,3 @@ services:
       - DOTNET_USE_POLLING_FILE_WATCHER=1
     # ports:
     #   - "5005:80"
-  api-comms-test:
-    image: api-comms-test
-    build:
-      target: test
-      context: ../
-      dockerfile: Comms.Api/Dockerfile-test
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - DOTNET_USE_POLLING_FILE_WATCHER=1

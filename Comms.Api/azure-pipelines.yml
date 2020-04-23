@@ -25,18 +25,16 @@ stages:
           name: Hosted Ubuntu 1604
         steps:
           - task: DockerCompose@0
-            displayName: "Build Images"
+            displayName: "Build Test Image"
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: DockerHub
-              dockerComposeFile: "Comms.Api/docker-compose.yml"
+              dockerComposeFile: "Comms.Api/docker-compose-test.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Build services"
               additionalImageTags: "$(Build.BuildNumber)"
               includeLatestTag: true
-              arguments: "--build-arg buildtime_APPID=$(buildtime_APPID)  --build-arg buildtime_APPSECRET=$(buildtime_APPSECRET) --build-arg buildtime_ADID=$(buildtime_ADID) --build-arg buildtime_SONARKEY=$(buildtime_SONARKEY) api-comms-test"
-
-
+              arguments: "--build-arg buildtime_APPID=$(buildtime_APPID)  --build-arg buildtime_APPSECRET=$(buildtime_APPSECRET) --build-arg buildtime_ADID=$(buildtime_ADID) --build-arg buildtime_SONARKEY=$(buildtime_SONARKEY)"
 # pool:
 #   vmImage: "ubuntu-latest"
 
