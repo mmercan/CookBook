@@ -85,6 +85,85 @@ stages:
             inputs:
               SourceFolder: "Helm/cookbook/charts/comms-api"
               TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/comms-api"
+
+  - stage: deploy_to_dev
+    jobs:
+      - deployment: DeployWeb
+        displayName: deploy Web App
+        pool:
+          vmImage: "Ubuntu-16.04"
+        # creates an environment if it doesn't exist
+        environment: "sentinel-helm.sentinel-helm"
+        variables:
+          chartName: "comms-api"
+          namespace: "cookbook-dev"
+          releaseName: "cookbook-dev-comms-api"
+          pipelines_pipeline: '"$(Build.DefinitionName)"'
+          pipelines_run: '"$(Build.BuildNumber)"'
+          pipelines_pipelineId: '"$(System.DefinitionId)"'
+          pipelines_project: '"$(System.TeamProject)"'
+          pipelines_org: '"$(System.TeamFoundationCollectionUri)"'
+          pipelines_jobName: '"$(Agent.JobName)"'
+          pipelines_runuri: '"$(pipelines_org)$(pipelines_project)/_build/results?buildId=$(Build.BuildId)"'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: printenv | sort
+                - task: HelmInstaller@0
+                  displayName: "Install Helm 3.1.2"
+                  inputs:
+                    helmVersion: 3.1.2
+                    checkLatestHelmVersion: false
+
+                - task: HelmDeploy@0
+                  inputs:
+                    connectionType: 'Kubernetes Service Connection'
+                    kubernetesServiceConnection: 'CookBook-Dev-cookbook-dev-1587525966506'
+                    namespace: 'cookbook-dev'
+                    command: 'ls'
+
+                # - task: HelmDeploy@0
+                #   displayName: "helm package"
+                #   inputs:
+                #     azureSubscription: "Visual Studio Enterprise"
+                #     azureResourceGroup: "akscluster-rg"
+                #     kubernetesCluster: "aks-matt"
+                #     namespace: "sentinel-helm"
+                #     command: package
+                #     chartPath: "$(Pipeline.Workspace)/drop/Helm/sentinel/charts/$(chartName)"
+                #     chartVersion: "2.0.0-$(Build.BuildNumber)"
+                #     destination: "$(System.DefaultWorkingDirectory)"
+                #     save: false
+
+                # - task: HelmDeploy@0
+                #   displayName: "helm upgrade"
+                #   inputs:
+                #     connectionType: "Azure Resource Manager"
+                #     azureSubscription: "Visual Studio Enterprise"
+                #     azureResourceGroup: "akscluster-rg"
+                #     kubernetesCluster: "aks-matt"
+                #     namespace: "sentinel-helm"
+                #     command: upgrade
+                #     chartType: FilePath
+                #     chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
+                #     releaseName: "$(releaseName)"
+                #     overrideValues: "image.tag=$(Build.BuildNumber) --set branch=$(Build.SourceBranchName) --set azurepipelines.pipeline=$(pipelines_pipeline)  --set azurepipelines.run='$(pipelines_run)'  --set azurepipelines.pipelineId='$(pipelines_pipelineId)'  --set azurepipelines.project=$(pipelines_project)  --set azurepipelines.org='$(pipelines_org)'  --set azurepipelines.jobName='$(pipelines_jobName)' --set azurepipelines.runuri='$(pipelines_runuri)' "
+
+                # - task: HelmDeploy@0
+                #   inputs:
+                #     #connectionType: "Kubernetes Service Connection"
+                #     #kubernetesServiceConnection: "sentinel-helm-sentinel-helm-1585014518048"
+                #     connectionType: "Azure Resource Manager"
+                #     azureSubscription: "Visual Studio Enterprise"
+                #     azureResourceGroup: "akscluster-rg"
+                #     kubernetesCluster: "aks-matt"
+                #     namespace: "sentinel-helm"
+                #     command: "ls"
+
+
+
+
 # pool:
 #   vmImage: "ubuntu-latest"
 
