@@ -1,0 +1,155 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+    exclude:
+      - features/experimental/*
+  paths:
+    include:
+      - CookBook.Api/*
+      - CookBook.Api.Tests/*
+      - Helm/cookbook/charts/cookbook-api/*
+
+stages:
+  - stage: build
+    jobs:
+      - job: build_cookbook_api
+        displayName: Build CookBook Api
+        pool:
+          name: Hosted Ubuntu 1604
+        steps:
+          - task: DockerCompose@0
+            displayName: "Build Test Image"
+            inputs:
+              containerregistrytype: "Container Registry"
+              dockerRegistryEndpoint: DockerHub
+              dockerComposeFile: "CookBook.Api/docker-compose-test.yml"
+              dockerComposeFileArgs: "TAGVersion=01"
+              action: "Build services"
+              additionalImageTags: "$(Build.BuildNumber)"
+              includeLatestTag: true
+              arguments: "--build-arg buildtime_APPID=$(buildtime_APPID)  --build-arg buildtime_APPSECRET=$(buildtime_APPSECRET) --build-arg buildtime_ADID=$(buildtime_ADID) --build-arg buildtime_SONARKEY=$(buildtime_SONARKEY)"
+
+          - task: Docker@2
+            displayName: Docker Run Test Image
+            inputs:
+              containerRegistry: DockerHub
+              command: run
+              arguments: "-i -v $(Build.ArtifactStagingDirectory):/TestResults api-cookbook-test"
+            continueOnError: true
+
+          - task: PublishTestResults@2
+            displayName: "Publish Test Results *.trx"
+            inputs:
+              testResultsFormat: VSTest
+              testResultsFiles: "*.trx"
+              searchFolder: "$(Build.ArtifactStagingDirectory)"
+
+          - task: PublishCodeCoverageResults@1
+            displayName: "Publish code coverage from $(Build.ArtifactStagingDirectory)/coverage.cobertura.xml"
+            inputs:
+              codeCoverageTool: Cobertura
+              summaryFileLocation: "$(Build.ArtifactStagingDirectory)/coverage.cobertura.xml"
+              pathToSources: "$(Build.SourcesDirectory)"
+
+          - task: DockerCompose@0
+            displayName: "Build Images"
+            inputs:
+              containerregistrytype: "Container Registry"
+              dockerRegistryEndpoint: matttestacr01
+              dockerComposeFile: "CookBook.Api/docker-compose.yml"
+              dockerComposeFileArgs: "TAGVersion=01"
+              action: "Build services"
+              additionalImageTags: "$(Build.BuildNumber)"
+              includeLatestTag: true
+
+          - task: DockerCompose@0
+            displayName: "Push Images"
+            inputs:
+              containerregistrytype: "Container Registry"
+              dockerRegistryEndpoint: matttestacr01
+              dockerComposeFile: "CookBook.Api/docker-compose.yml"
+              dockerComposeFileArgs: "TAGVersion=01"
+              action: "Push services"
+              additionalImageTags: "$(Build.BuildNumber)"
+              includeLatestTag: true
+
+          - task: CopyFiles@2
+            displayName: "Copy Helm CookBook.Api"
+            inputs:
+              SourceFolder: "Helm/cookbook/charts/cookbook-api"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/cookbook-api"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Artifacts: drop"
+
+  - stage: deploy_to_dev
+    jobs:
+      - deployment: DeployWeb
+        displayName: deploy Web App
+        pool:
+          vmImage: "Ubuntu-16.04"
+        # creates an environment if it doesn't exist
+        environment: "CookBook-Dev.cookbook-dev"
+        variables:
+          chartName: "cookbook-api"
+          namespace: "cookbook-dev"
+          releaseName: "cookbook-dev-cookbook-api"
+          pipelines_pipeline: '"$(Build.DefinitionName)"'
+          pipelines_run: '"$(Build.BuildNumber)"'
+          pipelines_pipelineId: '"$(System.DefinitionId)"'
+          pipelines_project: '"$(System.TeamProject)"'
+          pipelines_org: '"$(System.TeamFoundationCollectionUri)"'
+          pipelines_jobName: '"$(Agent.JobName)"'
+          pipelines_runuri: '"$(pipelines_org)$(pipelines_project)/_build/results?buildId=$(Build.BuildId)"'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: printenv | sort
+                - task: HelmInstaller@0
+                  displayName: "Install Helm 3.1.2"
+                  inputs:
+                    helmVersion: 3.1.2
+                    checkLatestHelmVersion: false
+
+                - task: HelmDeploy@0
+                  displayName: "helm package"
+                  inputs:
+                    connectionType: "Kubernetes Service Connection"
+                    kubernetesServiceConnection: "CookBook-Dev-cookbook-dev-1587531947641"
+                    namespace: "cookbook-dev"
+                    command: package
+                    chartPath: "$(Pipeline.Workspace)/drop/Helm/cookbook/charts/$(chartName)"
+                    chartVersion: "2.0.0-$(Build.BuildNumber)"
+                    destination: "$(System.DefaultWorkingDirectory)"
+                    save: false
+
+                - task: HelmDeploy@0
+                  displayName: "helm upgrade"
+                  inputs:
+                    connectionType: "Kubernetes Service Connection"
+                    kubernetesServiceConnection: "CookBook-Dev-cookbook-dev-1587531947641"
+                    namespace: "cookbook-dev"
+                    command: upgrade
+                    chartType: FilePath
+                    chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
+                    releaseName: "$(releaseName)"
+                    overrideValues: "image.tag=$(Build.BuildNumber) --set branch=$(Build.SourceBranchName) --set azurepipelines.pipeline=$(pipelines_pipeline)  --set azurepipelines.run='$(pipelines_run)'  --set azurepipelines.pipelineId='$(pipelines_pipelineId)'  --set azurepipelines.project=$(pipelines_project)  --set azurepipelines.org='$(pipelines_org)'  --set azurepipelines.jobName='$(pipelines_jobName)' --set azurepipelines.runuri='$(pipelines_runuri)' "
+# pool:
+#   vmImage: "ubuntu-latest"
+
+# steps:
+#   - script: echo Hello, world!
+#     displayName: "Run a one-line script"
+
+#   - script: |
+#       echo Add other tasks to build, test, and deploy your project.
+#       echo See https://aka.ms/yaml
+#     displayName: "Run a multi-line script"
