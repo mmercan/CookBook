@@ -5,7 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: matttestacr01.azurecr.io/api-cookbook
+  tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -33,7 +34,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
 ingress:
@@ -66,3 +67,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+azurepipelines:
+  run: "run"
+  pipeline: "pipeline"
+  pipelineId: "pipelineId"
+  jobName: "jobName"
+  runuri: "runuri"
+  project: "project"
+  org: "org"

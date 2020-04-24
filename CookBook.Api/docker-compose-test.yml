@@ -1,0 +1,14 @@
+version: "3.4"
+
+services:
+  api-cookbook-test:
+    image: api-cookbook-test
+    build:
+      target: test
+      context: ../
+      dockerfile: CookBook.Api/Dockerfile-test
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+    volumes:
+      - .:/src
