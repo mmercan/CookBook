@@ -221,7 +221,10 @@ namespace Comms.Api
                 endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllers();
 
+
                 endpoints.MapGrpcService<CreditRatingCheckService>();
+                endpoints.MapGrpcService<MeterReaderService>();
+
 
                 // endpoints.MapGet("/", async context =>
                 // {

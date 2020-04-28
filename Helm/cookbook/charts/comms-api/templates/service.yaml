@@ -11,5 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: 81
+      targetPort: 81
+      protocol: TCP
+      name: http2
   selector:
     {{- include "comms-api.selectorLabels" . | nindent 4 }}

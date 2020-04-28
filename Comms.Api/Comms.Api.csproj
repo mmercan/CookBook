@@ -12,6 +12,8 @@
   <ItemGroup>
     <Protobuf Include="Protos\credit-rating-service.proto" GrpcServices="Server" />
     <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\enums.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\MeterReader.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>

@@ -34,6 +34,8 @@ services:
     entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
     ports:
       - "5005:80"
+      - "5006:81"
+
   cookbook-api:
     image: cookbook-api:${TAGVersion}-dev-linux
     build:
@@ -48,4 +50,4 @@ services:
       - .:/src
     entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
     ports:
-      - "5006:80"
+      - "5007:80"
