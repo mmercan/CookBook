@@ -123,7 +123,7 @@ stages:
                   displayName: "helm package"
                   inputs:
                     connectionType: "Kubernetes Service Connection"
-                    kubernetesServiceConnection: "CookBook-Dev-cookbook-dev-1587531947641"
+                    kubernetesServiceConnection: "CookBook-Dev-cookbook-dev-1588071329268"
                     namespace: "cookbook-dev"
                     command: package
                     chartPath: "$(Pipeline.Workspace)/drop/Helm/cookbook/charts/$(chartName)"
@@ -135,7 +135,7 @@ stages:
                   displayName: "helm upgrade"
                   inputs:
                     connectionType: "Kubernetes Service Connection"
-                    kubernetesServiceConnection: "CookBook-Dev-cookbook-dev-1587531947641"
+                    kubernetesServiceConnection: "CookBook-Dev-cookbook-dev-1588071329268"
                     namespace: "cookbook-dev"
                     command: upgrade
                     chartType: FilePath
