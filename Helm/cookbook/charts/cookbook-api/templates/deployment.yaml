@@ -4,6 +4,14 @@ metadata:
   name: {{ include "cookbook-api.fullname" . }}
   labels:
     {{- include "cookbook-api.labels" . | nindent 4 }}
+  annotations:
+    azure-pipelines/run: {{ .Values.azurepipelines.run }}
+    azure-pipelines/pipeline: {{ .Values.azurepipelines.pipeline }}
+    azure-pipelines/pipelineId: {{ .Values.azurepipelines.pipelineId }}
+    azure-pipelines/jobName: {{ .Values.azurepipelines.jobName }}
+    azure-pipelines/runuri: {{ .Values.azurepipelines.runuri }}
+    azure-pipelines/project: {{ .Values.azurepipelines.project }}
+    azure-pipelines/org: {{ .Values.azurepipelines.org }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -13,6 +21,14 @@ spec:
     metadata:
       labels:
         {{- include "cookbook-api.selectorLabels" . | nindent 8 }}
+      annotations:
+        azure-pipelines/run: {{ .Values.azurepipelines.run }}
+        azure-pipelines/pipeline: {{ .Values.azurepipelines.pipeline }}
+        azure-pipelines/pipelineId: {{ .Values.azurepipelines.pipelineId }}
+        azure-pipelines/jobName: {{ .Values.azurepipelines.jobName }}
+        azure-pipelines/runuri: {{ .Values.azurepipelines.runuri }}
+        azure-pipelines/project: {{ .Values.azurepipelines.project }}
+        azure-pipelines/org: {{ .Values.azurepipelines.org }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
