@@ -19,19 +19,19 @@ metadata:
   name: cookbook-api-vs
 spec:
   hosts:
-    - "bookinfo.mercan.io"
+    - "api.cookbook.mercan.io"
   gateways:
     - cookbook-api-gateway
   http:
     - match:
         - uri:
-            exact: /
+            prefix: /
         - uri:
-            prefix: /static
-        - uri:
-            exact: /login
+            exact: /index.html
         - uri:
             exact: /logout
+        - uri:
+            prefix: /static
         - uri:
             prefix: /api/v1/products
       route:
