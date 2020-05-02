@@ -11,9 +11,9 @@ spec:
     #     name: http
     #     protocol: HTTP
     - port:
-        number: 81
-        name: grpc
-        protocol: GRPC
+        number: 80
+        name: http
+        protocol: HTTP
       hosts:
         - "comms.cookbook.mercan.io"
 ---
