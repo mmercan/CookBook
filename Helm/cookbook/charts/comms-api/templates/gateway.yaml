@@ -13,7 +13,7 @@ spec:
     - port:
         number: 80
         name: http
-        protocol: HTTP
+        protocol: HTTP2
       hosts:
         - "comms.cookbook.mercan.io"
 ---
@@ -30,12 +30,6 @@ spec:
     - match:
         - uri:
             prefix: /
-        - uri:
-            exact: /index.html
-        - uri:
-            prefix: /static
-        - uri:
-            prefix: /api/v1/products
       route:
         - destination:
             host: {{ include "comms-api.fullname" . }}
