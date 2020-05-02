@@ -10,10 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\credit-rating-service.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\enums.proto" GrpcServices="Server" />
-    <Protobuf Include="Protos\MeterReader.proto" GrpcServices="Server" />
+    <Protobuf Include="Protos\credit-rating-service.proto" GrpcServices="Server" ProtoRoot="Protos\" />
+    <Protobuf Include="Protos\greet.proto" GrpcServices="Server"  ProtoRoot="Protos\"/>
+    <Protobuf Include="Protos\enums.proto" GrpcServices="None"  ProtoRoot="Protos\"/>
+    <Protobuf Include="Protos\MeterReader.proto" GrpcServices="Server"  ProtoRoot="Protos\"/>
   </ItemGroup>
 
   <ItemGroup>

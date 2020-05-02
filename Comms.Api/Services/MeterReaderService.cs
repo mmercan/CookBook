@@ -1,6 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Comms.Api
 {
@@ -13,13 +15,14 @@ namespace Comms.Api
         {
             _logger = logger;
         }
-        public override Task<StatusMessage> AddReading(ReadingMessage request, ServerCallContext context)
+        public override Task<StatusMessage> AddReading(ReadingPackage request, ServerCallContext context)
         {
-
+            var date = DateTime.Now;
             return Task.FromResult(new StatusMessage
             {
                 Message = "new message 123",
-                Success = ReadingStatus.Success
+                Success = ReadingStatus.Success,
+                StatusTime = Timestamp.FromDateTime(DateTime.UtcNow)
             });
             //return new Comms.Api.StatusMessage();
             // return new StatusMessage();
