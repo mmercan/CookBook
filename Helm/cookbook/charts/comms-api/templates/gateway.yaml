@@ -27,10 +27,7 @@ spec:
   gateways:
     - comms-api-gateway
   http:
-    - match:
-        - uri:
-            prefix: /
-      route:
+    - route:
         - destination:
             host: {{ include "comms-api.fullname" . }}
             port:
