@@ -47,10 +47,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "comms-api.selectorLabels" -}}
+app: {{ include "comms-api.name" . }}
 app.kubernetes.io/name: {{ include "comms-api.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "comms-api.name" . }}
-version: {{ .Chart.AppVersion | quote }}
 {{- end -}}
 
 {{/*
