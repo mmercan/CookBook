@@ -21,7 +21,7 @@ spec:
     metadata:
       labels:
         {{- include "cookbook-api.selectorLabels" . | nindent 8 }}
-        app: {{ include "comms-api.name" . }}
+        app: {{ include "cookbook-api.name" . }}
         version: {{ .Chart.AppVersion | quote }}
       annotations:
         azure-pipelines/run: {{ .Values.azurepipelines.run }}
