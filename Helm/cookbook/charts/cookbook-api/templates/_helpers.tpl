@@ -49,6 +49,8 @@ Selector labels
 {{- define "cookbook-api.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "cookbook-api.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app: {{ include "cookbook-api.name" . }}
+version: {{ .Chart.AppVersion | quote }}
 {{- end -}}
 
 {{/*
