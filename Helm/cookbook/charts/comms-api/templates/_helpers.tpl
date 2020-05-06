@@ -37,6 +37,7 @@ Common labels
 {{- define "comms-api.labels" -}}
 helm.sh/chart: {{ include "comms-api.chart" . }}
 {{ include "comms-api.selectorLabels" . }}
+app: {{ include "comms-api.name" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -47,7 +48,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "comms-api.selectorLabels" -}}
-app: {{ include "comms-api.name" . }}
 app.kubernetes.io/name: {{ include "comms-api.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
