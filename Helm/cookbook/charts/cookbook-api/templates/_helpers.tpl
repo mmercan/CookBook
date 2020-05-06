@@ -36,9 +36,11 @@ Common labels
 */}}
 {{- define "cookbook-api.labels" -}}
 helm.sh/chart: {{ include "cookbook-api.chart" . }}
+app: {{ include "cookbook-api.name" . }}
 {{ include "cookbook-api.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
@@ -49,8 +51,6 @@ Selector labels
 {{- define "cookbook-api.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "cookbook-api.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ include "cookbook-api.name" . }}
-version: {{ .Chart.AppVersion | quote }}
 {{- end -}}
 
 {{/*

@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         {{- include "cookbook-ui.selectorLabels" . | nindent 8 }}
+        app: {{ include "cookbook-ui.name" . }}
+        version: {{ .Chart.AppVersion | quote }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

@@ -21,6 +21,8 @@ spec:
     metadata:
       labels:
         {{- include "comms-api.selectorLabels" . | nindent 8 }}
+        app: {{ include "comms-api.name" . }}
+        version: {{ .Chart.AppVersion | quote }}
       annotations:
         azure-pipelines/run: {{ .Values.azurepipelines.run }}
         azure-pipelines/pipeline: {{ .Values.azurepipelines.pipeline }}
