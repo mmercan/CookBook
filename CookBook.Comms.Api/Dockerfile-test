@@ -1,0 +1,36 @@
+FROM mmercan/sentinel-sonarqube-dotnet31-sdk AS test
+ARG buildtime_APPID
+ARG buildtime_APPSECRET
+ARG buildtime_ADID
+ARG buildtime_SONARKEY
+# ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+# ENV ASPNETCORE_ENVIRONMENT=Development
+# ENV SONAR_HOST http://sonar.myrcan.com
+# RUN apt-get update && apt-get install -y openjdk-8-jdk
+# RUN dotnet tool install --global dotnet-sonarscanner
+# ENV PATH="${PATH}:/root/.dotnet/tools"
+ENV ASPNETCORE_URLS=http://+:80
+ENV PROJECT=CookBook.Comms.Api
+ENV VERSION=1.0
+ENV SONARKEY=$buildtime_SONARKEY
+ENV APPID=$buildtime_APPID
+ENV APPSECRET=$buildtime_APPSECRET
+ENV ADID=$buildtime_ADID
+ENV SONAR_HOST=https://sonarcloud.io
+
+WORKDIR /src
+COPY CookBook.Comms.Api/CookBook.Comms.Api.csproj CookBook.Comms.Api/
+RUN dotnet restore CookBook.Comms.Api/CookBook.Comms.Api.csproj
+COPY . .
+RUN dotnet sonarscanner begin /k:$PROJECT /v:$VERSION /d:sonar.host.url=$SONAR_HOST /o:mmercan-github /d:sonar.login=$SONARKEY  /d:sonar.cs.opencover.reportsPaths="/TestResults/coverage.opencover.xml" /d:sonar.exclusions="**bootstrap.css, **bootstrap-reboot.css, **bootstrap.js, **/wwwroot/**, **Empty.Tests" /d:sonar.coverage.exclusions="**Tests*.cs, **.js," /d:sonar.cs.vstest.reportsPaths="/TestResults/*.trx"
+RUN dotnet build ./CookBook.Comms.Api/CookBook.Comms.Api.sln
+
+RUN dotnet test ./CookBook.Comms.Api/CookBook.Comms.Api.sln   /p:CollectCoverage=true /p:CoverletOutput=/TestResults/ /p:MergeWith=/TestResults/coverage.json --logger=trx -r /TestResults/
+RUN dotnet test ./Empty.Tests/Empty.Tests.sln /p:CollectCoverage=true /p:MergeWith="/TestResults/coverage.json" /p:CoverletOutputFormat="opencover" /p:CoverletOutput=/TestResults/
+
+# RUN dotnet test ./HealthChecks/Mercan.HealthChecks.Common.Tests/Mercan.HealthChecks.Common.Tests.csproj  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=/TestResults/Mercan.HealthChecks.Common.Tests.xml
+# RUN dotnet test ./Comms.Api.Tests/Comms.Api.Tests.csproj /p:CollectCoverage=true  /p:CoverletOutputFormat=opencover /p:CoverletOutput=/TestResults/Comms.Api.Tests.xml 
+RUN dotnet build-server shutdown
+RUN dotnet sonarscanner end /d:sonar.login=$SONARKEY
+
+ENTRYPOINT dotnet test ./CookBook.Comms.Api/CookBook.Comms.Api.sln  /p:CollectCoverage=true /p:Exclude="[xunit.*.*]*" /p:CoverletOutput=/TestResults/ /p:MergeWith=/TestResults/coverage.json --logger=trx -r /TestResults/ && dotnet test ./Empty.Tests/Empty.Tests.sln /p:CollectCoverage=true /p:MergeWith="/TestResults/coverage.json" /p:CoverletOutputFormat="cobertura" /p:CoverletOutput=/TestResults/
