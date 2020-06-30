@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "CookBook.Comms.Handler.fullname" . }}
+  labels:
+    {{- include "CookBook.Comms.Handler.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "CookBook.Comms.Handler.selectorLabels" . | nindent 4 }}

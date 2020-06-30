@@ -1,0 +1,17 @@
+prototypes
+resources
+**/bin/Debug/
+**/bin/Release/
+**/bin/container/
+**/bin/local/
+**/obj/container/
+**/obj/local/
+**/obj/Debug/
+**/obj/
+**/Logs/
+**/node_modules/
+**/.vs
+docker-compose-debug-linux_secrets.yml
+test.ps1
+**/package-lock.json
+HealthChecks/Mercan.HealthChecks.ServiceBus.Tests/appsettings.test.json

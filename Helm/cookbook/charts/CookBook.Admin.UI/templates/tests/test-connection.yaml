@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "CookBook.Admin.UI.fullname" . }}-test-connection"
+  labels:
+    {{- include "CookBook.Admin.UI.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "CookBook.Admin.UI.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

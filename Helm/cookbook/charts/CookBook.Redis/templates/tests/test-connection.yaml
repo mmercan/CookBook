@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "CookBook.Redis.fullname" . }}-test-connection"
+  labels:
+    {{- include "CookBook.Redis.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "CookBook.Redis.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never
