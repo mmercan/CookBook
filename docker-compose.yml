@@ -9,8 +9,8 @@ services:
       dockerfile: CookBook.Admin.UI/Dockerfile
     volumes:
       - .\CookBook.Admin.UI:/var/www/html
-    #entrypoint: ng serve --host 0.0.0.0 --poll 1 --disable-host-check
-    entrypoint: npm run startdocker
+    entrypoint: ng serve --host 0.0.0.0 --poll 1 --disable-host-check
+    #entrypoint: npm run startdocker
     ports:
       - "4200:4200"
 
@@ -22,8 +22,8 @@ services:
       dockerfile: CookBook.Recipe.UI/Dockerfile
     volumes:
       - .\CookBook.Recipe.UI:/var/www/html
-    #entrypoint: ng serve --host 0.0.0.0 --poll 1 --disable-host-check
-    entrypoint: npm run startdocker
+    entrypoint: ng serve --host 0.0.0.0 --poll 1 --disable-host-check
+    #entrypoint: npm run startdocker
     ports:
       - "4201:4200"
 
@@ -60,6 +60,34 @@ services:
     ports:
       - "5007:80"
 
+  cookbook-comms-handler:
+    image: cookbook-comms-handler:${TAGVersion}-dev-linux
+    build:
+      target: develop
+      context: .
+      dockerfile: CookBook.Comms.Handler/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - .:/src
+    entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
+
+  cookbook-recipe-handler:
+    image: cookbook-recipe-handler:${TAGVersion}-dev-linux
+    build:
+      target: develop
+      context: .
+      dockerfile: CookBook.Recipe.Handler/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - DOTNET_RUNNING_IN_CONTAINER=true
+    volumes:
+      - .:/src
+    entrypoint: dotnet watch run --verbose --no-launch-profile --configuration Debug
+
   cookbook-db-mongodb:
     image: cookbook-db-mongodb:${TAGVersion}-dev-linux
     build:
@@ -79,16 +107,18 @@ services:
       - 27017:27017
 
   cookbook-redis:
-    image: sentinel-db-redis:${TAGVersion}-dev-linux
+    image: cookbook-redis:${TAGVersion}-dev-linux
     build:
-      context: ./Sentinel.Db.Redis
-      dockerfile: dockerfile
+      context: ./CookBook.Redis
+      dockerfile: Dockerfile
+    ports:
+      - "6379:6379"
 
   cookbook-rabbitmq:
-    image: sentinel-service-rabbitmq:${TAGVersion}-dev-linux
+    image: cookbook-rabbitmq:${TAGVersion}-dev-linux
     build:
-      context: ./Sentinel.Service.Rabbitmq
-      dockerfile: dockerfile-linux
+      context: ./CookBook.RabbitMQ
+      dockerfile: Dockerfile
     labels:
       NAME: "rabbitmq1"
     environment:
@@ -100,3 +130,6 @@ services:
     # - ./config/:/etc/rabbitmq/
     # - "./rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro"
     # - "./autocluster-0.4.1.ez:/usr/lib/rabbitmq/lib/rabbitmq_server-3.5.5/plugins/autocluster-0.4.1.ez"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
