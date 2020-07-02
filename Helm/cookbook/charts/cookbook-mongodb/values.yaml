@@ -4,7 +4,7 @@
 replicaCount: 1
 
 image:
-  repository: mmercan/sentinel-api-comms
+  repository: mmercan/cookbook-db-mongodb
   tag: latest
   pullPolicy: IfNotPresent
 
