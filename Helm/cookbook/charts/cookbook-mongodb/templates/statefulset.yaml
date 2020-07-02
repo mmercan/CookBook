@@ -1,0 +1,48 @@
+{{- $name := include "CookBook.MongoDB.fullname" . -}}
+{{- $cfgname := printf "%s-%s" $name "config" -}}
+{{- $secretname := printf "%s-%s" $name "secret" -}}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name:  {{ include "CookBook.MongoDB.fullname" . }}
+  labels:
+    {{- include "CookBook.MongoDB.labels" . | nindent 4 }}
+  annotations:
+    {{- include "CookBook.MongoDB.annotations" . | nindent 4 }}
+spec:
+  serviceName: {{ include "CookBook.MongoDB.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "CookBook.MongoDB.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "CookBook.MongoDB.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- include "CookBook.MongoDB.annotations" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "CookBook.MongoDB.serviceAccountName" . }}
+      terminationGracePeriodSeconds: 15
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 27017
+          name: tcp
+        envFrom:
+        {{- if .Values.configmap }}
+          - configMapRef:
+              name: {{ $cfgname }}
+        {{- end }}
+        {{- if .Values.secrets }}
+          - secretRef:
+              name: {{ $secretname }}
+        {{- end }}
+        volumeMounts:
+          - mountPath: /data/db
+            name: cookbook-mongodb
+      volumes:
+        - name: cookbook-mongodb
+          persistentVolumeClaim:
+            claimName: px-cookbook-mongo-pvc 
