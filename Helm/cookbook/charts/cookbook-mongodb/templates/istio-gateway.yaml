@@ -10,7 +10,7 @@ spec:
   servers:
     - port:
         number: 27017
-        name: mongo
+        name: MONGO-27017
         protocol: MONGO
       hosts:
         - {{ $host }}
