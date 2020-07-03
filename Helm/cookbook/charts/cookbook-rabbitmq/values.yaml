@@ -66,3 +66,17 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+
+environment: dev
+branch: unknown
+
+azurepipelines:
+  run: "run"
+  pipeline: "pipeline"
+  pipelineId: "pipelineId"
+  jobName: "jobName"
+  runuri: "runuri"
+  project: "project"
+  org: "org"
