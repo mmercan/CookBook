@@ -7,9 +7,9 @@ trigger:
       - features/experimental/*
   paths:
     include:
-      - Sentinel.Db.Redis/*
-      - Helm/sentinel/charts/db-redis/*
-      - devops/Sentinel.Db.Redis/azure-pipelines.yml
+      - CookBook.Redis/*
+      - Helm/cookbook/charts/cookbook-redis/*
+      - devops/pipelines/CookBook.Redis/azure-pipelines.yml
 
 stages:
   - stage: build
@@ -24,7 +24,7 @@ stages:
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: dockerhub
-              dockerComposeFile: "Sentinel.Db.Redis/docker-compose.yml"
+              dockerComposeFile: "CookBook.Redis/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Build services"
               additionalImageTags: "$(Build.BuildNumber)"
@@ -35,38 +35,23 @@ stages:
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: dockerhub
-              dockerComposeFile: "Sentinel.Db.Redis/docker-compose.yml"
+              dockerComposeFile: "CookBook.Redis/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Push services"
               additionalImageTags: "$(Build.BuildNumber)"
               includeLatestTag: true
 
           - task: CopyFiles@2
-            displayName: "Copy Helm db-redis"
+            displayName: "Copy Helm cookbook-redis"
             inputs:
-              SourceFolder: "Helm/sentinel/charts/db-redis"
-              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/sentinel/charts/db-redis"
+              SourceFolder: "Helm/cookbook/charts/cookbook-redis"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/cookbook-redis"
 
           - task: CopyFiles@2
             displayName: "Copy Helm Values"
             inputs:
               SourceFolder: "Helm/values"
               TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/values"
-
-          - task: colinsalmcorner.colinsalmcorner-buildtasks.replace-tokens-task.ReplaceTokens@1
-            displayName: "Replace tokens in Sentinel.Api.HealthMonitoring"
-            inputs:
-              sourcePath: Sentinel.Api.HealthMonitoring
-              filePattern: "*.yaml"
-            enabled: false
-
-          - task: CopyFiles@2
-            displayName: "Copy yaml"
-            inputs:
-              SourceFolder: Sentinel.Api.HealthMonitoring
-              Contents: "*.yaml"
-              TargetFolder: "$(Build.ArtifactStagingDirectory)"
-            enabled: false
 
           - task: PublishBuildArtifacts@1
             displayName: "Publish Artifacts: drop"
@@ -80,9 +65,9 @@ stages:
         # creates an environment if it doesn't exist
         environment: "sentinel-dev.sentinel-dev"
         variables:
-          chartName: "db-redis"
-          namespace: "sentinel-dev"
-          releaseName: "sentinel-dev-db-redis"
+          chartName: "cookbook-redis"
+          namespace: "cookbook-dev"
+          releaseName: "cookbook-redis-dev"
           pipelines_pipeline: '"$(Build.DefinitionName)"'
           pipelines_run: '"$(Build.BuildNumber)"'
           pipelines_pipelineId: '"$(System.DefinitionId)"'
@@ -108,17 +93,17 @@ stages:
                     kubernetesServiceConnection: "sentinel-dev"
                     namespace: $(namespace)
                     command: package
-                    chartPath: "$(Pipeline.Workspace)/drop/Helm/sentinel/charts/$(chartName)"
+                    chartPath: "$(Pipeline.Workspace)/drop/Helm/cookbook/charts/$(chartName)"
                     chartVersion: "2.0.0-$(Build.BuildNumber)"
                     destination: "$(System.DefaultWorkingDirectory)"
                     save: false
 
                 - task: PowerShell@2
                   inputs:
-                    targetType: 'inline'
-                    script: 'helm template "$ENV:PIPELINE_WORKSPACE/drop/Helm/sentinel/charts/db-redis" -f "$ENV:PIPELINE_WORKSPACE/drop/Helm/values/db-redis/dev-values.yaml"'
-                    errorActionPreference: 'silentlyContinue'
-                    
+                    targetType: "inline"
+                    script: 'helm template "$ENV:PIPELINE_WORKSPACE/drop/Helm/cookbook/charts/cookbook-redis" -f "$ENV:PIPELINE_WORKSPACE/drop/Helm/values/cookbook-redis/dev-values.yaml"'
+                    errorActionPreference: "silentlyContinue"
+
                 - task: HelmDeploy@0
                   displayName: "helm upgrade"
                   inputs:
@@ -128,7 +113,7 @@ stages:
                     command: upgrade
                     chartType: FilePath
                     chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
-                    valueFile: '$(Pipeline.Workspace)/drop/Helm/values/db-redis/dev-values.yaml'
+                    valueFile: "$(Pipeline.Workspace)/drop/Helm/values/cookbook-redis/dev-values.yaml"
                     releaseName: "$(releaseName)"
                     overrideValues: "image.tag=$(Build.BuildNumber) --set branch=$(Build.SourceBranchName) --set azurepipelines.pipeline=$(pipelines_pipeline)  --set azurepipelines.run='$(pipelines_run)'  --set azurepipelines.pipelineId='$(pipelines_pipelineId)'  --set azurepipelines.project=$(pipelines_project)  --set azurepipelines.org='$(pipelines_org)'  --set azurepipelines.jobName='$(pipelines_jobName)' --set azurepipelines.runuri='$(pipelines_runuri)' "
 

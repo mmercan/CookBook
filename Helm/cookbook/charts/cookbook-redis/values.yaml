@@ -5,7 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: mmercan/cookbook-db-redis
+  tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -33,8 +34,30 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 80
+  type: LoadBalancer
+  port: 6379
+
+istio:
+  enabled: true
+
+password: 2jWa8sSM8ZuhS3Qc
+configmap: {
+ databases: "8"
+}
+
+environment: dev
+branch: unknown
+
+azurepipelines:
+  run: "run"
+  pipeline: "pipeline"
+  pipelineId: "pipelineId"
+  jobName: "jobName"
+  runuri: "runuri"
+  project: "project"
+  org: "org"
+
+
 
 ingress:
   enabled: false
