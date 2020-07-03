@@ -1,0 +1,20 @@
+{{- if .Values.istio.enabled -}}
+{{- $host := printf "%s.%s.%s" .Chart.Name .Values.environment .Values.hostdomain -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "CookBook.RabbitMQ.fullname" . }}-vs
+spec:
+  hosts:
+    - {{ $host }}
+  gateways:
+    - {{ include "CookBook.RabbitMQ.fullname" . }}-gateway
+  http:
+    - route:
+        - destination:
+            host: {{ include "CookBook.RabbitMQ.fullname" . }}-http  # Service Name
+            subset: v1
+            port:
+              number: 80
+
+{{- end }}

@@ -3,14 +3,19 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
-
+branch: unknown
 image:
-  repository: nginx
+  repository: mmercan/cookbook-rabbitmq
+  tag: latest
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+environment: dev
+hostdomain: ui.mercan.io
+password: Pa$$w0rd
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -31,6 +36,10 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
+
+
+istio:
+  enabled: true
 
 service:
   type: ClusterIP
@@ -68,9 +77,14 @@ tolerations: []
 affinity: {}
 
 
+env:
+  values:
 
-environment: dev
-branch: unknown
+secrets:
+  SentinelConnection: "Server=sentinel-mssql-db-helm-insecret;Database=sentinel;User Id=sa;Password=MySentP@ssw0rd;"
+
+configmap:
+    RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
 
 azurepipelines:
   run: "run"

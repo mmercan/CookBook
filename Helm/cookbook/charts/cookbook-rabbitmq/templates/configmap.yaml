@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
     name: "{{ include "CookBook.RabbitMQ.fullname" . }}-config"
     labels:
-    {{- include "CookBook.RabbitMQ.labels" . | nindent 4 }}
+    {{- include "CookBook.RabbitMQ.labels" . | nindent 6 }}
 data:
  requirepass: {{.Values.password}}
  servicename: {{ include "CookBook.RabbitMQ.fullname" . }}
