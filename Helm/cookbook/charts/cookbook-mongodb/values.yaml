@@ -36,6 +36,9 @@ service:
   type: LoadBalancer
   port: 27017
 
+istio:
+  enabled: true
+
 configmap:
   MONGO_DATA_DIR: "/data/db"   
   MONGO_LOG_DIR: "/dev/null"  
@@ -43,8 +46,10 @@ configmap:
 secrets:
   MONGO_INITDB_ROOT_USERNAME:  "root" 
   MONGO_INITDB_ROOT_PASSWORD: "hbMnztmZ4w9JJTGZ"
-
+hostdomain: cookbook.mercan.io
+environment: dev
 branch: unknown
+
 azurepipelines:
   run: "run"
   pipeline: "pipeline"
