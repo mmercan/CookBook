@@ -63,7 +63,7 @@ stages:
         pool:
           vmImage: "Ubuntu-16.04"
         # creates an environment if it doesn't exist
-        environment: "sentinel-dev.sentinel-dev"
+        environment: "cookbook-dev.cookbook-dev"
         variables:
           chartName: "cookbook-redis"
           namespace: "cookbook-dev"
