@@ -28,6 +28,8 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 6379
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
           - mountPath: /redis-master
             name: config
@@ -38,8 +40,6 @@ spec:
             items:
             - key: redis-config
               path: redis.conf
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
