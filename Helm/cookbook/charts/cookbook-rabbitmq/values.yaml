@@ -42,7 +42,7 @@ istio:
   enabled: true
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 80
 
 ingress:
