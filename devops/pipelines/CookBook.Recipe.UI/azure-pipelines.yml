@@ -7,9 +7,9 @@ trigger:
       - features/experimental/*
   paths:
     include:
-      - Sentinel.UI.Admin/*
-      - Helm/sentinel/charts/admin-ui/*
-      - devops/Sentinel.UI.Admin/azure-pipelines.yml
+      - CookBook.Recipe.UI/*
+      - Helm/cookbook/charts/cookbook-recipe-ui/*
+      - devops/pipelines/CookBook.Recipe.UI/azure-pipelines.yml
 
 stages:
   - stage: build
@@ -24,7 +24,7 @@ stages:
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: dockerhub
-              dockerComposeFile: "Sentinel.UI.Admin/docker-compose.yml"
+              dockerComposeFile: "CookBook.Recipe.UI/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Build services"
               additionalImageTags: "$(Build.BuildNumber)"
@@ -35,17 +35,17 @@ stages:
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: dockerhub
-              dockerComposeFile: "Sentinel.UI.Admin/docker-compose.yml"
+              dockerComposeFile: "CookBook.Recipe.UI/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Push services"
               additionalImageTags: "$(Build.BuildNumber)"
               includeLatestTag: true
 
           - task: CopyFiles@2
-            displayName: "Copy Helm admin-ui"
+            displayName: "Copy Helm chart"
             inputs:
-              SourceFolder: "Helm/sentinel/charts/admin-ui"
-              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/sentinel/charts/admin-ui"
+              SourceFolder: "Helm/cookbook/charts/admin-ui"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/cookbook-recipe-ui"
 
           - task: CopyFiles@2
             displayName: "Copy Helm Values"
@@ -63,11 +63,11 @@ stages:
         pool:
           vmImage: "Ubuntu-16.04"
         # creates an environment if it doesn't exist
-        environment: "sentinel-dev.sentinel-dev"
+        environment: "cookbook-dev.cookbook-dev"
         variables:
-          chartName: "admin-ui"
-          namespace: "sentinel-dev"
-          releaseName: "sentinel-dev-admin-ui"
+          chartName: "cookbook-recipe-ui"
+          namespace: "cookbook-dev"
+          releaseName: "cookbook-recipe-ui-dev"
           pipelines_pipeline: '"$(Build.DefinitionName)"'
           pipelines_run: '"$(Build.BuildNumber)"'
           pipelines_pipelineId: '"$(System.DefinitionId)"'
@@ -93,7 +93,7 @@ stages:
                     kubernetesServiceConnection: "sentinel-dev"
                     namespace: $(namespace)
                     command: package
-                    chartPath: "$(Pipeline.Workspace)/drop/Helm/sentinel/charts/$(chartName)"
+                    chartPath: "$(Pipeline.Workspace)/drop/Helm/cookbook/charts/$(chartName)"
                     chartVersion: "2.0.0-$(Build.BuildNumber)"
                     destination: "$(System.DefaultWorkingDirectory)"
                     save: false
@@ -101,7 +101,7 @@ stages:
                 - task: PowerShell@2
                   inputs:
                     targetType: "inline"
-                    script: 'helm template "$ENV:PIPELINE_WORKSPACE/drop/Helm/sentinel/charts/admin-ui" -f "$ENV:PIPELINE_WORKSPACE/drop/Helm/values/admin-ui/dev-values.yaml"'
+                    script: 'helm template "$ENV:PIPELINE_WORKSPACE/drop/Helm/cookbook/charts/cookbook-recipe-ui" -f "$ENV:PIPELINE_WORKSPACE/drop/Helm/values/cookbook-recipe-ui/dev-values.yaml"'
                     errorActionPreference: "silentlyContinue"
 
                 - task: HelmDeploy@0
@@ -113,7 +113,7 @@ stages:
                     command: upgrade
                     chartType: FilePath
                     chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
-                    valueFile: "$(Pipeline.Workspace)/drop/Helm/values/admin-ui/dev-values.yaml"
+                    valueFile: "$(Pipeline.Workspace)/drop/Helm/values/cookbook-recipe-ui/dev-values.yaml"
                     releaseName: "$(releaseName)"
                     overrideValues: "image.tag=$(Build.BuildNumber) --set branch=$(Build.SourceBranchName) --set azurepipelines.pipeline=$(pipelines_pipeline)  --set azurepipelines.run='$(pipelines_run)'  --set azurepipelines.pipelineId='$(pipelines_pipelineId)'  --set azurepipelines.project=$(pipelines_project)  --set azurepipelines.org='$(pipelines_org)'  --set azurepipelines.jobName='$(pipelines_jobName)' --set azurepipelines.runuri='$(pipelines_runuri)' "
 
@@ -126,9 +126,9 @@ stages:
         # creates an environment if it doesn't exist
         environment: "sentinel-dev.sentinel-dev"
         variables:
-          chartName: "admin-ui"
+          chartName: "cookbook-recipe-ui"
           namespace: "sentinel-test"
-          releaseName: "sentinel-test-admin-ui"
+          releaseName: "cookbook-recipe-ui-test"
           pipelines_pipeline: '"$(Build.DefinitionName)"'
           pipelines_run: '"$(Build.BuildNumber)"'
           pipelines_pipelineId: '"$(System.DefinitionId)"'
