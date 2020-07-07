@@ -5,7 +5,7 @@ metadata:
   labels:                    
     {{- include "CookBook.RabbitMQ.labels" . | nindent 4 }}
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:        
   - name: transport          
     port: 5672               
