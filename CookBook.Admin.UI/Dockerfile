@@ -28,5 +28,5 @@ FROM nginx:alpine as prod
 EXPOSE 80
 COPY CookBook.Admin.UI/nginx.conf /etc/nginx/nginx.conf
 WORKDIR /usr/share/nginx/html
-COPY --from=builder /home/node/admin/dist/ClientApp/ .
+COPY --from=builder /home/node/admin/dist/cookbook-admin/ .
 # ENTRYPOINT ["npm", "run", "startdocker"]
