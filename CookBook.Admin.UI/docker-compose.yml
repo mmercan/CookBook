@@ -1,0 +1,9 @@
+version: "3.4"
+
+services:
+  sentinel-ui-admin:
+    image: mmercan/cookbook-ui-admin:${TAGVersion}-prod-linux
+    build:
+      target: prod
+      context: ../
+      dockerfile: CookBook.Admin.UI/Dockerfile

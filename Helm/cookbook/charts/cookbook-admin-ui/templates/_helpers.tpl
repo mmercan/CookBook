@@ -47,8 +47,21 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "CookBook.Admin.UI.selectorLabels" -}}
+app: {{ include "CookBook.Admin.UI.name" . }}
+version: {{ .Chart.AppVersion  | quote }}
 app.kubernetes.io/name: {{ include "CookBook.Admin.UI.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+branch:  {{ .Values.branch }}
+{{- end -}}
+
+{{- define "CookBook.Admin.UI.annotations" -}}
+azure-pipelines/run: {{ .Values.azurepipelines.run }}
+azure-pipelines/pipeline: {{ .Values.azurepipelines.pipeline }}
+azure-pipelines/pipelineId: {{ .Values.azurepipelines.pipelineId }}
+azure-pipelines/jobName: {{ .Values.azurepipelines.jobName }}
+azure-pipelines/runuri: {{ .Values.azurepipelines.runuri | replace " " "%20" | replace "(" "%28" | replace ")" "%29" | replace "*" "%2A"}}
+azure-pipelines/project: {{ .Values.azurepipelines.project | replace " " "%20" | replace "(" "%28" | replace ")" "%29" | replace "*" "%2A"}}
+azure-pipelines/org: {{ .Values.azurepipelines.org }}
 {{- end -}}
 
 {{/*
