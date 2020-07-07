@@ -124,7 +124,7 @@ stages:
         pool:
           vmImage: "Ubuntu-16.04"
         # creates an environment if it doesn't exist
-        environment: "cookbook-test.cookbook-test"
+        environment: "cookbook-dev.cookbook-dev"
         variables:
           chartName: "cookbook-admin-ui"
           namespace: "cookbook-test"
