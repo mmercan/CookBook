@@ -44,7 +44,7 @@ stages:
           - task: CopyFiles@2
             displayName: "Copy Helm chart"
             inputs:
-              SourceFolder: "Helm/cookbook/charts/admin-ui"
+              SourceFolder: "Helm/cookbook/charts/cookbook-recipe-ui"
               TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/cookbook-recipe-ui"
 
           - task: CopyFiles@2
