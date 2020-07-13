@@ -1,41 +1,26 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "CookBook.Comms.Api.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
+{{- $host := printf "%s.%s.%s" .Chart.Name .Values.environment .Values.hostdomain -}}
 apiVersion: extensions/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name:  {{ include "CookBook.Comms.Api.fullname" . }}
   labels:
     {{- include "CookBook.Comms.Api.labels" . | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-{{- if .Values.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
     - hosts:
-      {{- range .hosts }}
-        - {{ . | quote }}
-      {{- end }}
-      secretName: {{ .secretName }}
-  {{- end }}
-{{- end }}
+      - {{ $host }}
+      secretName: "{{ $host }}-secret"
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-        {{- range .paths }}
-          - path: {{ . }}
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
-        {{- end }}
-  {{- end }}
+  - host: {{ $host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ include "CookBook.Comms.Api.fullname" . }}
+          servicePort: 80
 {{- end }}

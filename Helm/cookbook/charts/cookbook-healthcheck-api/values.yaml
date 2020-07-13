@@ -1,15 +1,14 @@
-# Default values for CookBook.Comms.Api.
+# Default values for cookbook-healthcheck-api.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: mmercan/cookbook-api-comms
-  tag: latest
+  repository: nginx
   pullPolicy: IfNotPresent
 
-
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
@@ -22,26 +21,21 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-environment: dev
-hostdomain: ui.cookbook.mercan.io
-branch: unknown
-buildnumber: unknown
-azurepipelines:
-  run: "run"
-  pipeline: "pipeline"
-  pipelineId: "pipelineId"
-  jobName: "jobName"
-  runuri: "runuri url url * (kk)-"
-  project: "project * (kk)-"
-  org: "org"
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
 service:
   type: ClusterIP
   port: 80
 
-istio:
-  enabled: true
-  
 ingress:
   enabled: false
   annotations: {}
@@ -72,15 +66,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-imagePullSecrets: []
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000

@@ -7,10 +7,10 @@ trigger:
       - features/experimental/*
   paths:
     include:
-      - Sentinel.Api.Comms/*
-      - Sentinel.Api.Comms.Tests/*
-      - Helm/sentinel/charts/comms-api/*
-      - devops/Sentinel.Api.Comms/azure-pipelines.yml
+      - CookBook.Comms.Api/*
+      - CookBook.Comms.Api.Tests/*
+      - Helm/cookbook/charts/cookbook-comms-api/*
+      - devops/CookBook.Comms.Api/azure-pipelines.yml
 
 stages:
   - stage: build
@@ -25,7 +25,7 @@ stages:
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: dockerhub
-              dockerComposeFile: "Sentinel.Api.Comms/docker-compose-test.yml"
+              dockerComposeFile: "CookBook.Comms.Api/docker-compose-test.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Build services"
               additionalImageTags: "$(Build.BuildNumber)"
@@ -37,7 +37,7 @@ stages:
             inputs:
               containerRegistry: dockerhub
               command: run
-              arguments: "-i -v $(Build.ArtifactStagingDirectory):/TestResults sentinel-api-comms-test"
+              arguments: "-i -v $(Build.ArtifactStagingDirectory):/TestResults cookbook-api-comms-test"
             continueOnError: true
 
           - task: PublishTestResults@2
@@ -59,7 +59,7 @@ stages:
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: dockerhub
-              dockerComposeFile: "Sentinel.Api.Comms/docker-compose.yml"
+              dockerComposeFile: "CookBook.Comms.Api/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Build services"
               additionalImageTags: "$(Build.BuildNumber)"
@@ -70,7 +70,7 @@ stages:
             inputs:
               containerregistrytype: "Container Registry"
               dockerRegistryEndpoint: dockerhub
-              dockerComposeFile: "Sentinel.Api.Comms/docker-compose.yml"
+              dockerComposeFile: "CookBook.Comms.Api/docker-compose.yml"
               dockerComposeFileArgs: "TAGVersion=01"
               action: "Push services"
               additionalImageTags: "$(Build.BuildNumber)"
@@ -79,37 +79,14 @@ stages:
           - task: CopyFiles@2
             displayName: "Copy Helm comms-api"
             inputs:
-              SourceFolder: "Helm/sentinel/charts/comms-api"
-              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/sentinel/charts/comms-api"
+              SourceFolder: "Helm/cookbook/charts/cookbook-comms-api"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/cookbook-comms-api"
 
           - task: CopyFiles@2
             displayName: "Copy Helm Values"
             inputs:
               SourceFolder: "Helm/values"
               TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/values"
-
-          - task: GitHubRelease@1
-            displayName: "GitHub release (create)"
-            inputs:
-              gitHubConnection: "mrtmrcn github"
-              tagSource: userSpecifiedTag
-              tag: "release-v1.0.$(Build.BuildNumber)"
-              assets: "$(Build.ArtifactStagingDirectory)/**"
-              isPreRelease: true
-            enabled: false
-
-          - task: colinsalmcorner.colinsalmcorner-buildtasks.replace-tokens-task.ReplaceTokens@1
-            displayName: "Replace tokens in Sentinel.Api.Comms"
-            inputs:
-              sourcePath: Sentinel.Api.Comms
-              filePattern: "*.yaml"
-
-          - task: CopyFiles@2
-            displayName: "Copy yaml"
-            inputs:
-              SourceFolder: Sentinel.Api.Comms
-              Contents: "*.yaml"
-              TargetFolder: "$(Build.ArtifactStagingDirectory)"
 
           - task: PublishBuildArtifacts@1
             displayName: "Publish Artifacts: drop"
@@ -121,11 +98,11 @@ stages:
         pool:
           vmImage: "Ubuntu-16.04"
         # creates an environment if it doesn't exist
-        environment: "sentinel-dev.sentinel-dev"
+        environment: "cookbook-dev.cookbook-dev"
         variables:
-          chartName: "comms-api"
-          namespace: "sentinel-dev"
-          releaseName: "sentinel-dev-comms-api"
+          chartName: "cookbook-comms-api"
+          namespace: "cookbook-dev"
+          releaseName: "cookbook-comms-api-dev"
           pipelines_pipeline: '"$(Build.DefinitionName)"'
           pipelines_run: '"$(Build.BuildNumber)"'
           pipelines_pipelineId: '"$(System.DefinitionId)"'
@@ -151,7 +128,7 @@ stages:
                     kubernetesServiceConnection: "sentinel-dev"
                     namespace: $(namespace)
                     command: package
-                    chartPath: "$(Pipeline.Workspace)/drop/Helm/sentinel/charts/$(chartName)"
+                    chartPath: "$(Pipeline.Workspace)/drop/Helm/cookbook/charts/$(chartName)"
                     chartVersion: "2.0.0-$(Build.BuildNumber)"
                     destination: "$(System.DefaultWorkingDirectory)"
                     save: false
@@ -159,7 +136,7 @@ stages:
                 - task: PowerShell@2
                   inputs:
                     targetType: "inline"
-                    script: 'helm template "$ENV:PIPELINE_WORKSPACE/drop/Helm/sentinel/charts/comms-api" -f "$ENV:PIPELINE_WORKSPACE/drop/Helm/values/comms-api/dev-values.yaml"'
+                    script: 'helm template "$ENV:PIPELINE_WORKSPACE/drop/Helm/cookbook/charts/cookbook-comms-api" -f "$ENV:PIPELINE_WORKSPACE/drop/Helm/values/cookbook-comms-api/dev-values.yaml"'
                     errorActionPreference: "silentlyContinue"
 
                 - task: HelmDeploy@0
@@ -171,7 +148,7 @@ stages:
                     command: upgrade
                     chartType: FilePath
                     chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
-                    valueFile: "$(Pipeline.Workspace)/drop/Helm/values/comms-api/dev-values.yaml"
+                    valueFile: "$(Pipeline.Workspace)/drop/Helm/values/cookbook-comms-api/dev-values.yaml"
                     releaseName: "$(releaseName)"
                     overrideValues: "image.tag=$(Build.BuildNumber) --set branch=$(Build.SourceBranchName) --set azurepipelines.pipeline=$(pipelines_pipeline)  --set azurepipelines.run='$(pipelines_run)'  --set azurepipelines.pipelineId='$(pipelines_pipelineId)'  --set azurepipelines.project=$(pipelines_project)  --set azurepipelines.org='$(pipelines_org)'  --set azurepipelines.jobName='$(pipelines_jobName)' --set azurepipelines.runuri='$(pipelines_runuri)' "
 
@@ -184,9 +161,9 @@ stages:
         # creates an environment if it doesn't exist
         environment: "sentinel-dev.sentinel-dev"
         variables:
-          chartName: "comms-api"
-          namespace: "sentinel-test"
-          releaseName: "sentinel-dev-comms-api"
+          chartName: "cookbook-comms-api-test"
+          namespace: "cookbook-test"
+          releaseName: "comms-api"
           pipelines_pipeline: '"$(Build.DefinitionName)"'
           pipelines_run: '"$(Build.BuildNumber)"'
           pipelines_pipelineId: '"$(System.DefinitionId)"'

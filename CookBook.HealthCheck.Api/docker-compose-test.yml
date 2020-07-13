@@ -1,0 +1,12 @@
+version: "3.4"
+
+services:
+  cookbook-api-healthcheck-test:
+    image: cookbook-api-healthcheck-test
+    build:
+      target: test
+      context: ../
+      dockerfile: CookBook.HealthCheck.Api/Dockerfile-test
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
