@@ -1,11 +1,17 @@
+{{- $name := include "CookBook.Comms.Api.fullname" . -}}
+{{- $cfgname := printf "%s-%s" $name "config" -}}
+{{- $secretname := printf "%s-%s" $name "secret" -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "CookBook.Comms.Api.fullname" . }}
   labels:
     {{- include "CookBook.Comms.Api.labels" . | nindent 4 }}
+  annotations:
+    {{- include "CookBook.Comms.Api.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       {{- include "CookBook.Comms.Api.selectorLabels" . | nindent 6 }}
@@ -13,19 +19,13 @@ spec:
     metadata:
       labels:
         {{- include "CookBook.Comms.Api.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- include "CookBook.Comms.Api.annotations" . | nindent 8 }}
     spec:
-    {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
       serviceAccountName: {{ include "CookBook.Comms.Api.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -41,6 +41,29 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if or .Values.configmap .Values.secrets }}
+          envFrom:
+          {{- end }}
+          {{- if .Values.configmap }}
+            - configMapRef:
+                name: {{ $cfgname }}
+          {{- end }}
+          {{- if .Values.secrets }}   
+            - secretRef:
+                name: {{ $secretname }}
+           {{- end }}
+          env:
+            - name: buildnumber
+              value: {{ .Values.buildnumber | quote }}
+            - name: branch
+              value: {{  .Values.branch | quote }}
+          {{- if (.Values.env) and  (.Values.env.values) -}}
+          {{- range .Values.env.values }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+          {{- end -}}
+          {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
