@@ -1,28 +1,13 @@
 
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
 metadata:
-  name: role-grantor
-rules:
-- apiGroups: ["rbac.authorization.k8s.io"]
-  resources: ["rolebindings"]
-  verbs: ["create"]
-- apiGroups: ["rbac.authorization.k8s.io"]
-  resources: ["clusterroles"]
-  verbs: ["bind"]
-  resourceNames: ["admin","edit","view"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: role-grantor-binding
-  namespace: cookbook-dev
+  name: {{ include "CookBook.Comms.Api.serviceAccountName" . }}-admin
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: role-grantor
+  name: cluster-admin
 subjects:
-- apiGroup: rbac.authorization.k8s.io
-  kind: ServiceAccount
+- kind: ServiceAccount
   name: {{ include "CookBook.Comms.Api.serviceAccountName" . }}
+  namespace: cookbook-dev
