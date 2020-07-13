@@ -94,7 +94,7 @@ stages:
   - stage: deploy_to_dev
     jobs:
       - deployment: DeployWeb
-        displayName: deploy Web App
+        displayName: deploy cookbook-comms-api to cookbook-dev
         pool:
           vmImage: "Ubuntu-16.04"
         # creates an environment if it doesn't exist
