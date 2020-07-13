@@ -23,7 +23,7 @@ serviceAccount:
   name:
 
 environment: dev
-hostdomain: ui.cookbook.mercan.io
+hostdomain: dev.cookbook.mercan.io
 branch: unknown
 buildnumber: unknown
 azurepipelines:
