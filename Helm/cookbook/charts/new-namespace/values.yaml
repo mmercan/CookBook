@@ -9,7 +9,7 @@ namespace:
   istio-injection: "enabled"
   pipeline_project: "a_new_project"
   pipeline_repository: "my_repoo"
-  azure_resourcegroup_url: "https://portal.azure.com/"
+  azure_resourcegroup_url: "portal_azure_com"
 
 
 # # Default values for new-namespace.
