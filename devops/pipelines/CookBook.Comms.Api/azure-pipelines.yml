@@ -83,6 +83,12 @@ stages:
               TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/cookbook-comms-api"
 
           - task: CopyFiles@2
+            displayName: "Copy Helm new namespace"
+            inputs:
+              SourceFolder: "Helm/cookbook/charts/new-namespace"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/new-namespace"
+
+          - task: CopyFiles@2
             displayName: "Copy Helm Values"
             inputs:
               SourceFolder: "Helm/values"
@@ -161,13 +167,19 @@ stages:
         # creates an environment if it doesn't exist
         environment: "sentinel-dev.sentinel-dev"
         variables:
-          chartName: "cookbook-comms-api-test"
-          namespace: "cookbook-test"
+          chartName: "new-namespace"
+          namespace: "cookbook-perf"
           releaseName: "comms-api"
+          Application: "CookBook"
+          CostCentre: "CookBook-Cost-Centre"
+          Environment: "test"
+          Stream: "Cookbook-stream"
+          TechnicalContact: "Matt@mercan@bupa.com.au"
+          pipelines_project: '"$(System.TeamProject)"'
+          azure-resource-group-url: "https://portal.azure.com/myurl"
           pipelines_pipeline: '"$(Build.DefinitionName)"'
           pipelines_run: '"$(Build.BuildNumber)"'
           pipelines_pipelineId: '"$(System.DefinitionId)"'
-          pipelines_project: '"$(System.TeamProject)"'
           pipelines_org: '"$(System.TeamFoundationCollectionUri)"'
           pipelines_jobName: '"$(Agent.JobName)"'
           pipelines_runuri: '"$(pipelines_org)$(pipelines_project)/_build/results?buildId=$(Build.BuildId)"'
@@ -181,6 +193,36 @@ stages:
             deploy:
               steps:
                 - script: printenv | sort
+                - task: HelmInstaller@0
+                  displayName: "Install Helm 3.2.1"
+                  inputs:
+                    helmVersion: 3.2.1
+                    checkLatestHelmVersion: false
+
+                - task: HelmDeploy@0
+                  displayName: "helm package"
+                  inputs:
+                    connectionType: "Kubernetes Service Connection"
+                    kubernetesServiceConnection: "sentinel-dev"
+                    namespace: $(namespace)
+                    command: package
+                    chartPath: "$(Pipeline.Workspace)/drop/Helm/cookbook/charts/$(chartName)"
+                    chartVersion: "2.0.0-$(Build.BuildNumber)"
+                    destination: "$(System.DefaultWorkingDirectory)"
+                    save: false
+
+                - task: HelmDeploy@0
+                  displayName: "helm upgrade"
+                  inputs:
+                    connectionType: "Kubernetes Service Connection"
+                    kubernetesServiceConnection: "sentinel-dev"
+                    namespace: $(namespace)
+                    command: upgrade
+                    chartType: FilePath
+                    chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
+                    releaseName: "$(releaseName)"
+                    overrideValues: "namespace.name='$(namespace)' --set namespace.Application='$(Application)' --set namespace.CostCentre='$(CostCentre)' --set namespace.Environment='$(Environment)' --set namespace.Stream='$(Stream)' --set namespace.TechnicalContact='$(TechnicalContact)' --set namespace.pipeline_project='$(pipelines_project)' --set namespace.pipeline_repository='$(pipelines_project)' --set namespace.azure_resourcegroup_url='$(azure-resource-group-url)' "
+                    arguments: '--create-namespace'
 
             routeTraffic:
               steps:
