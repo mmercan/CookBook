@@ -161,13 +161,19 @@ stages:
         # creates an environment if it doesn't exist
         environment: "sentinel-dev.sentinel-dev"
         variables:
-          chartName: "cookbook-comms-api-test"
+          chartName: "new-namespace"
           namespace: "cookbook-test"
           releaseName: "comms-api"
+          Application: "CookBook"
+          CostCentre: "CookBook-Cost-Centre"
+          Environment: "test"
+          Stream: "Cookbook-stream"
+          TechnicalContact: "Matt@mercan@bupa.com.au"
+          pipelines_project: '"$(System.TeamProject)"'
+          azure-resource-group-url: "https://portal.azure.com/myurl"
           pipelines_pipeline: '"$(Build.DefinitionName)"'
           pipelines_run: '"$(Build.BuildNumber)"'
           pipelines_pipelineId: '"$(System.DefinitionId)"'
-          pipelines_project: '"$(System.TeamProject)"'
           pipelines_org: '"$(System.TeamFoundationCollectionUri)"'
           pipelines_jobName: '"$(Agent.JobName)"'
           pipelines_runuri: '"$(pipelines_org)$(pipelines_project)/_build/results?buildId=$(Build.BuildId)"'
@@ -181,6 +187,36 @@ stages:
             deploy:
               steps:
                 - script: printenv | sort
+                - task: HelmInstaller@0
+                  displayName: "Install Helm 3.1.2"
+                  inputs:
+                    helmVersion: 3.1.2
+                    checkLatestHelmVersion: false
+
+                - task: HelmDeploy@0
+                  displayName: "helm package"
+                  inputs:
+                    connectionType: "Kubernetes Service Connection"
+                    kubernetesServiceConnection: "sentinel-dev"
+                    namespace: $(namespace)
+                    command: package
+                    chartPath: "$(Pipeline.Workspace)/drop/Helm/cookbook/charts/$(chartName)"
+                    chartVersion: "2.0.0-$(Build.BuildNumber)"
+                    destination: "$(System.DefaultWorkingDirectory)"
+                    save: false
+
+                - task: HelmDeploy@0
+                  displayName: "helm upgrade"
+                  inputs:
+                    connectionType: "Kubernetes Service Connection"
+                    kubernetesServiceConnection: "sentinel-dev"
+                    namespace: $(namespace)
+                    command: upgrade
+                    chartType: FilePath
+                    chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
+                    releaseName: "$(releaseName)"
+                    overrideValues: "namespace.name=$(namespace) --set namespace.pipeline-project=$(pipelines_project) --set branch=$(Build.SourceBranchName) --set azurepipelines.pipeline=$(pipelines_pipeline)  --set azurepipelines.run='$(pipelines_run)'  --set azurepipelines.pipelineId='$(pipelines_pipelineId)'  --set azurepipelines.org='$(pipelines_org)'  --set azurepipelines.jobName='$(pipelines_jobName)' --set azurepipelines.runuri='$(pipelines_runuri)' "
+
 
             routeTraffic:
               steps:
