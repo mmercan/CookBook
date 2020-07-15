@@ -1,14 +1,14 @@
 
 namespace:
   name: "my app"
-  Application: "App"
-  CostCentre": "Cost"
-  Environment": "Env"
-  Stream": "Strrr"
-  TechnicalContact: "Me@me.com"
+  application: "App"
+  cost_centre": "Cost"
+  environment": "Env"
+  stream": "Strrr"
+  technical_contact: "Me_at_me.com"
   istio-injection: "enabled"
-  pipeline_project: "a new project"
-  pipeline_repository: "my repoo"
+  pipeline_project: "a_new_project"
+  pipeline_repository: "my_repoo"
   azure_resourcegroup_url: "https://portal.azure.com/"
 
 
