@@ -2,9 +2,9 @@
 namespace:
   name: "my app"
   application: "App"
-  cost_centre": "Cost"
-  environment": "Env"
-  stream": "Strrr"
+  cost_centre: "Cost"
+  environment: "Env"
+  stream: "Strrr"
   technical_contact: "Me_at_me.com"
   istio-injection: "enabled"
   pipeline_project: "a_new_project"
