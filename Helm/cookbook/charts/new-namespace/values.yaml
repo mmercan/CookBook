@@ -7,9 +7,9 @@ namespace:
   Stream": "Strrr"
   TechnicalContact: "Me@me.com"
   istio-injection: "enabled"
-  pipeline-project: "a new project"
-  pipeline-repository: "my repoo"
-  azure-resource-group-url: "https://portal.azure.com/"
+  pipeline_project: "a new project"
+  pipeline_repository: "my repoo"
+  azure_resourcegroup_url: "https://portal.azure.com/"
 
 
 # # Default values for new-namespace.
