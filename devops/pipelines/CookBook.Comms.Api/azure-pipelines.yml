@@ -83,6 +83,12 @@ stages:
               TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/cookbook-comms-api"
 
           - task: CopyFiles@2
+            displayName: "Copy Helm new namespace"
+            inputs:
+              SourceFolder: "Helm/cookbook/charts/new-namespace"
+              TargetFolder: "$(Build.ArtifactStagingDirectory)/Helm/cookbook/charts/new-namespace"
+
+          - task: CopyFiles@2
             displayName: "Copy Helm Values"
             inputs:
               SourceFolder: "Helm/values"
