@@ -221,7 +221,7 @@ stages:
                     chartType: FilePath
                     chartPath: "$(System.DefaultWorkingDirectory)/$(chartName)-2.0.0-$(Build.BuildNumber).tgz"
                     releaseName: "$(releaseName)"
-                    overrideValues: "namespace.name='$(namespace)' --set namespace.Application='$(Application)' --set namespace.CostCentre='$(CostCentre)' --set namespace.Environment='$(Environment)' --set namespace.Stream='$(Stream)' --set namespace.TechnicalContact='$(TechnicalContact)' --set namespace.pipeline_project='$(pipelines_project)' --set namespace.pipeline_repository='$(pipelines_project)' --set namespace.azure_resourcegroup_url='$(azure-resource-group-url)' "
+                    overrideValues: "namespace.name='$(namespace)' --set namespace.Application='$(Application)' --set namespace.CostCentre='$(CostCentre)' --set namespace.Environment='$(Environment)' --set namespace.Stream='$(Stream)' --set namespace.TechnicalContact='$(TechnicalContact)' --set namespace.azure_resourcegroup_url='$(azure-resource-group-url)' "
                     arguments: '--create-namespace'
 
             routeTraffic:
