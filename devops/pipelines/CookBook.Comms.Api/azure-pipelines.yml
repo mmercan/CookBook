@@ -171,9 +171,9 @@ stages:
           namespace: "cookbook-perf"
           releaseName: "comms-api"
           Application: "CookBook"
-          CostCentre: "CookBook-Cost-Centre"
+          CostCentre: "CookBook_Cost_Centre"
           Environment: "test"
-          Stream: "Cookbook-stream"
+          Stream: "cookbook_stream"
           TechnicalContact: "Matt@mercan@bupa.com.au"
           pipelines_project: '"$(System.TeamProject)"'
           azure-resource-group-url: "https://portal.azure.com/myurl"
