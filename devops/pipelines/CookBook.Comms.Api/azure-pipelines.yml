@@ -168,7 +168,7 @@ stages:
         environment: "sentinel-dev.sentinel-dev"
         variables:
           chartName: "new-namespace"
-          namespace: "cookbook-test"
+          namespace: "cookbook-perf"
           releaseName: "comms-api"
           Application: "CookBook"
           CostCentre: "CookBook-Cost-Centre"
