@@ -27,7 +27,7 @@ namespace CookBook.Comms.Api.Controllers
             var config = KubernetesClientConfiguration.InClusterConfig();
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request!");
-
+            
             var list = client.ListNamespacedPod("cookbook-dev");
             foreach (var item in list.Items)
             {
