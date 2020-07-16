@@ -5,7 +5,7 @@ namespace:
   cost_centre: "Cost"
   environment: "Env"
   stream: "Strrr"
-  technical_contact: "Me_at_me.com"
+  technical_contact: "matt.mercan@bupa.com.au"
   istio-injection: "enabled"
   pipeline_project: "a_new_project"
   pipeline_repository: "my_repoo"
