@@ -174,7 +174,7 @@ stages:
           CostCentre: "cookBook_cost_centre"
           environment: "test"
           Stream: "cookbook_stream"
-          technical_contact: "matt.mercan-at-bupa.com.au"
+          technical_contact: "matt.mercan@bupa.com.au"
           pipelines_project: '"$(System.TeamProject)"'
           azure-resource-group-url: "https://portal.azure.com/myurl"
           pipelines_pipeline: '"$(Build.DefinitionName)"'
