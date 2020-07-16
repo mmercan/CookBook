@@ -37,7 +37,7 @@ Common labels
 {{- define "new-namespace.labels" -}}
 {{- if .Values.namespace -}}
 {{- range $key, $value := .Values.namespace }}
-{{ $key }}: {{ default "" $value  | quote }}
+{{ $key }}: {{ default "" $value | replace "@" "%40" | replace " " "%20" | replace "(" "%28" | replace ")" "%29" | replace "*" "%2A" | quote }}
 {{- end -}}
 {{- end -}}
 {{- end -}}
