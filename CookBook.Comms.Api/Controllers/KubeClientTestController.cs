@@ -19,15 +19,21 @@ namespace CookBook.Comms.Api.Controllers
         }
 
 
-        [HttpGet]
-        public object Get()
+        [HttpGet("pods")]
+        public object GetPods()
         {
-
-           // var config = KubernetesClientConfiguration.BuildDefaultConfig();
-            var config = KubernetesClientConfiguration.InClusterConfig();
+            KubernetesClientConfiguration config = null;
+            try
+            {
+                config = KubernetesClientConfiguration.BuildDefaultConfig();
+            }
+            catch
+            {
+                config = KubernetesClientConfiguration.InClusterConfig();
+            }
             IKubernetes client = new Kubernetes(config);
             Console.WriteLine("Starting Request!");
-            
+
             var list = client.ListNamespacedPod("cookbook-dev");
             foreach (var item in list.Items)
             {
@@ -39,7 +45,52 @@ namespace CookBook.Comms.Api.Controllers
             }
             return list.Items;
 
+
+
             //return View();
         }
+
+
+        [HttpGet("services")]
+        public object GetServices()
+        {
+            KubernetesClientConfiguration config = null;
+            try
+            {
+                config = KubernetesClientConfiguration.BuildDefaultConfig();
+            }
+            catch
+            {
+                config = KubernetesClientConfiguration.InClusterConfig();
+            }
+            IKubernetes client = new Kubernetes(config);
+            Console.WriteLine("Starting Request!");
+
+            var list = client.ListNamespacedService("cookbook-dev");
+            return list.Items;
+        }
+
+
+        [HttpGet("namespaces")]
+        public object GetNamespaces()
+        {
+            KubernetesClientConfiguration config = null;
+            try
+            {
+                config = KubernetesClientConfiguration.BuildDefaultConfig();
+            }
+            catch
+            {
+                config = KubernetesClientConfiguration.InClusterConfig();
+            }
+            IKubernetes client = new Kubernetes(config);
+            Console.WriteLine("Starting Request!");
+
+
+            var namespaces = client.ListNamespace();
+            return namespaces.Items;
+        }
+
     }
+
 }

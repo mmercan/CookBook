@@ -4,6 +4,8 @@ metadata:
   name: {{ include "CookBook.Comms.Api.fullname" . }}
   labels:
     {{- include "CookBook.Comms.Api.labels" . | nindent 4 }}
+  annotations:
+    {{- include "CookBook.Comms.Api.service.annotations" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:

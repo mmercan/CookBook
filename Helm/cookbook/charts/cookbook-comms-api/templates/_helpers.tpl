@@ -64,6 +64,14 @@ azure-pipelines/project: {{ .Values.azurepipelines.project | replace " " "%20" |
 azure-pipelines/org: {{ .Values.azurepipelines.org }}
 {{- end -}}
 
+{{- define "CookBook.Comms.Api.service.annotations" -}}
+healthcheck/isalive: "/healthcheck/isalive"
+healthcheck/isaliveandwell: "/healthcheck/isaliveandwell"
+{{- end -}}
+
+
+
+
 {{/*
 Create the name of the service account to use
 */}}
